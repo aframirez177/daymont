@@ -11,10 +11,10 @@ const pushKN = (PRESSURE * 1e5 * Math.PI * (BORE / 2000) ** 2) / 1000;
 
 function Rig({ stateRef, ui, onHover }) {
   const g = useRef();
-  const { size, viewport } = useThree();
-  const compact = size.width < 820;
-  const pos = compact ? [0.25, 0.75, 0] : [viewport.width * 0.17, 1.2, 0];
-  const scale = compact ? Math.min(1.1, viewport.width / 6.6) : Math.min(1.05, viewport.width / 12);
+  const { viewport } = useThree();
+  // Model is ≈ 7.4 units long with the rod out; keep 12 % air on each side
+  const scale = Math.min(1.35, (viewport.width * 1.02) / 7.4); // rotation foreshortens ~12 %, so this still leaves air
+  const pos = [0, 0.1, 0];
   useFrame((_, dt) => {
     const s = stateRef.current;
     s.t = (s.t ?? 0) + dt;
@@ -64,7 +64,7 @@ export default function HeroCylinder() {
 
   return (
     <div ref={host} className="hero3d-host" onPointerMove={(e) => setTip({ x: e.clientX, y: e.clientY })}>
-      <Stage live={live} camera={{ position: [0, 0.4, 10], fov: 32 }} controls shadowY={-1.6}>
+      <Stage live={live} camera={{ position: [0, 0.6, 10], fov: 30 }} controls shadowY={-1.05}>
         <Rig stateRef={stateRef} ui={ui} onHover={setPart} />
       </Stage>
       <div className="hero3d-ui" role="group" aria-label="Controles del modelo 3D">

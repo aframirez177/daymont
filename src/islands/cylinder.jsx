@@ -135,8 +135,14 @@ export function Cylinder({ stateRef, accent = '#F24E1E', dims = dimsFrom(), cuta
 
   const shadow = { castShadow, receiveShadow: true };
   const ri = R - Math.max(0.04, R * 0.1) - 0.004;
+  // Centre on the model's own extent (rear clevis → rod eye at mid-stroke),
+  // so every view frames the cylinder, not the barrel, at the origin.
+  const travel = L - 0.34 - CAP * 0.2;
+  const minX = -L / 2 - CAP - 0.78;
+  const maxX = -travel / 2 + 0.5 * travel * 0.92 + ROD_LEN + 0.36 + rodR * 1.9;
+  const centre = -(minX + maxX) / 2;
   return (
-    <group>
+    <group position={[centre, 0, 0]}>
       <group ref={barrel} {...hover(onHover, 'camisa')}>
         <mesh geometry={tube} rotation={[0, 0, -Math.PI / 2]} material={m.paint} {...shadow} />
         <mesh rotation={[0, 0, Math.PI / 2]} material={m.bore}>

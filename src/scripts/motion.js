@@ -54,8 +54,7 @@ if (!reduce) {
     const tl = gsap.timeline({ scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
     tl.to(hero.querySelector('.l1'), { xPercent: -14, ease: 'none' }, 0)
       .to(hero.querySelector('.l2'), { xPercent: 10, ease: 'none' }, 0)
-      .to(hero.querySelector('.meta-row'), { y: -60, opacity: 0, ease: 'none' }, 0)
-      .to(hero.querySelector('.hero-foot'), { y: 80, opacity: 0, ease: 'none' }, 0);
+      .to(hero.querySelector('.meta-row'), { opacity: 0, ease: 'none' }, 0);
   }
 
   // Ghost numerals: oversized outline indices drifting at their own depth

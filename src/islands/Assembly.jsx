@@ -16,7 +16,7 @@ function Rig({ stateRef, progressRef, onHover }) {
   const { viewport, size } = useThree();
   const compact = size.width < 700;
   // Fit the whole cylinder (≈ 9 units long, rod out) inside narrow portrait screens
-  const fit = compact ? Math.min(0.9, viewport.width / 6.4) : 1;
+  const fit = compact ? Math.min(0.9, (viewport.width * 0.84) / 7.4) : 1;
   useFrame((_, dt) => {
     const p = progressRef.current;
     const s = stateRef.current;
@@ -36,7 +36,7 @@ function Rig({ stateRef, progressRef, onHover }) {
     g.current.scale.setScalar(z);
   });
   return (
-    <group ref={g} position={compact ? [0, 0.05, 0] : [0.3, 0.35, 0]}>
+    <group ref={g} position={compact ? [0, 0.05, 0] : [0, 0.35, 0]}>
       <Cylinder stateRef={stateRef} accent={usePalette().accent} dims={DIMS} onHover={onHover} />
     </group>
   );

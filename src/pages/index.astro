@@ -30,27 +30,28 @@ const schema = [
 >
   <!-- HERO -->
   <section class="hero" id="inicio" data-cl data-cl-load>
-    <div class="hero-3d"><HeroCylinder client:idle /></div>
-    <div class="wrap over">
+    <div class="wrap hero-grid">
       <div class="meta-row">
         <span class="label">Bogotá · <b>Desde {company.founded}</b></span>
         <span class="label">Hidráulica · <b>Neumática</b></span>
         <span class="label">Diseño · <b>Fabricación · Reparación</b></span>
       </div>
-      <h1 class="display-xl" data-split data-cl-text data-cl-label="EJE 01" data-cl-cota={`${company.founded} — ${new Date().getFullYear()} · ${years} AÑOS`}>
-        <span class="l1">Fuerza lineal</span>
-        <span class="l2 hl">desde 1979.</span>
-      </h1>
-      <div class="hero-foot">
+      <div class="hero-copy">
+        <h1 class="display-hero" data-split data-cl-text data-cl-label="EJE 01" data-cl-cota={`${company.founded} — ${new Date().getFullYear()} · ${years} AÑOS`}>
+          <span class="l1">Fuerza lineal</span>
+          <span class="l2 hl">desde 1979.</span>
+        </h1>
         <p class="lead">Diseñamos, fabricamos y reparamos cilindros hidráulicos y neumáticos. Torno, CNC, impresión 3D, soldadura y pintura en un mismo taller en Bogotá.</p>
-        <div style="display:grid;gap:18px;justify-items:start">
-          <div class="btns">
-            <a class="btn primary" href="#configurador" data-track="hero_configurar">Configurar un cilindro <span class="arr">→</span></a>
-            <a class="btn" href={waRepair} target="_blank" rel="noopener" data-track="hero_reparar">Reparar un cilindro</a>
-          </div>
-          <span class="scroll-cue label"><i></i> Scroll para ver cómo se arma</span>
+        <div class="btns">
+          <a class="btn primary" href="#configurador" data-track="hero_configurar">Configurar un cilindro <span class="arr">→</span></a>
+          <a class="btn" href={waRepair} target="_blank" rel="noopener" data-track="hero_reparar">Reparar un cilindro</a>
         </div>
       </div>
+      <figure class="hero-viewer" aria-label="Cilindro hidráulico en 3D, interactivo">
+        <span class="hv-tag hv-tl label">Vista isométrica · DYM-H-80</span>
+        <span class="hv-tag hv-tr label">Ø80 · Carrera 500</span>
+        <HeroCylinder client:idle />
+      </figure>
     </div>
   </section>
 

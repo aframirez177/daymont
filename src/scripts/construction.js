@@ -18,29 +18,32 @@ function fontMetrics(style) {
   if (metricsCache.has(font)) return metricsCache.get(font);
   const ctx = canvas.getContext('2d');
   ctx.font = font;
-  const m = ctx.measureText('HDMX');
+  // Cap height from flat-topped capitals; ascent = top of the text content box
+  // (what Range rects report), so baseline = rect.top + ascent, exactly.
+  const m = ctx.measureText('HEFTIXZ');
   const out = {
     ascent: m.fontBoundingBoxAscent ?? parseFloat(style.fontSize) * 0.9,
     cap: m.actualBoundingBoxAscent ?? parseFloat(style.fontSize) * 0.7,
+    ctx,
   };
   metricsCache.set(font, out);
   return out;
 }
 
 function lineBoxes(el) {
-  // Split headlines animate inner spans; measure the static word wrappers instead.
-  let rects;
-  const words = el.querySelectorAll('.w');
-  if (words.length) rects = [...words].map((w) => w.getBoundingClientRect());
-  else {
-    const range = document.createRange();
-    range.selectNodeContents(el);
-    rects = [...range.getClientRects()];
+  // Text-node ranges give the glyph content box of each fragment. Word wrappers
+  // (.w) are inline-blocks whose boxes follow line-height, not the glyphs.
+  const rects = [];
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  const range = document.createRange();
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    if (!n.textContent.trim()) continue;
+    range.selectNodeContents(n);
+    for (const r of range.getClientRects()) if (r.width > 1 && r.height > 1) rects.push(r);
   }
-  rects = rects.filter((r) => r.width > 2 && r.height > 2);
   const lines = [];
   for (const r of rects) {
-    const hit = lines.find((l) => Math.abs(l.top - r.top) < r.height * 0.5);
+    const hit = lines.find((l) => Math.abs(l.top - r.top) < r.height * 0.3);
     if (hit) { hit.left = Math.min(hit.left, r.left); hit.right = Math.max(hit.right, r.right); }
     else lines.push({ top: r.top, left: r.left, right: r.right, height: r.height });
   }
@@ -72,6 +75,7 @@ function build(section) {
     section.prepend(layer);
   }
   layer.replaceChildren();
+  document.documentElement.classList.add('cl-measuring');
   const box = section.getBoundingClientRect();
   const W = box.width, H = box.height;
   let i = 0;
@@ -79,12 +83,16 @@ function build(section) {
 
   section.querySelectorAll('[data-cl-text]').forEach((el) => {
     const st = getComputedStyle(el);
-    const { ascent, cap } = fontMetrics(st);
+    const { ascent, cap, ctx } = fontMetrics(st);
     const lines = lineBoxes(el);
-    const left = Math.min(...lines.map((l) => l.left)) - box.left;
+    if (!lines.length) return;
+    const first = el.textContent.trim().charAt(0);
+    const bearing = first ? -ctx.measureText(first).actualBoundingBoxLeft : 0; // >0 when ink starts right of the origin
+    const left = Math.min(...lines.map((l) => l.left)) - box.left + bearing;
     lines.forEach((l, n) => {
-      const base = l.top - box.top + ascent;
-      const capTop = base - cap;
+      const snap = (v) => Math.round(v * devicePixelRatio) / devicePixelRatio;
+      const base = snap(l.top - box.top + ascent);
+      const capTop = snap(base - cap) - 1; // 1px line sits on top of the cap edge, not inside the ink
       make(layer, 'cl h', { left: 0, top: `${capTop}px`, width: `${W}px` }, step());
       make(layer, 'cl h axis march', { left: 0, top: `${base}px`, width: `${W}px` }, step());
       if (n === 0) tag(layer, 'CAP', W - 44, capTop - 14, false, step());
@@ -113,6 +121,7 @@ function build(section) {
     c.appendChild(s);
   });
 
+  document.documentElement.classList.remove('cl-measuring');
   if (wasDrawn) layer.classList.add('drawn');
   return layer;
 }
@@ -141,7 +150,6 @@ export function initConstruction({ ScrollTrigger, gsap } = {}, root = document) 
         trigger: s, start: 'top 88%', end: 'top 12%', scrub: 0.4,
         onUpdate: (self) => layer.style.setProperty('--p', self.progress.toFixed(4)),
       });
-      gsap.fromTo(layer, { yPercent: 3 }, { yPercent: -3, ease: 'none', scrollTrigger: { trigger: s, start: 'top bottom', end: 'bottom top', scrub: true } });
     });
     ScrollTrigger?.refresh();
   });
