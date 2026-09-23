@@ -2,3 +2,8 @@ node_modules/
 dist/
 .astro/
 .DS_Store
+
+# Stale copies of the old scratch workspace (duplicates of committed files)
+/daymont/
+/logo/
+/daymont-exploracion.html
