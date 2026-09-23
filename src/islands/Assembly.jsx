@@ -1,7 +1,7 @@
 // Pinned section: vertical scroll drives a horizontal strip of 7 steps
 // while a procedural 3D cylinder assembles in sync.
 import { useEffect, useRef, useState } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Cylinder, usePalette, smooth, dimsFrom, PARTS } from './cylinder.jsx';
@@ -13,6 +13,10 @@ gsap.registerPlugin(ScrollTrigger);
 
 function Rig({ stateRef, progressRef, onHover }) {
   const g = useRef();
+  const { viewport, size } = useThree();
+  const compact = size.width < 700;
+  // Fit the whole cylinder (≈ 9 units long, rod out) inside narrow portrait screens
+  const fit = compact ? Math.min(0.9, viewport.width / 6.4) : 1;
   useFrame((_, dt) => {
     const p = progressRef.current;
     const s = stateRef.current;
@@ -28,11 +32,11 @@ function Rig({ stateRef, progressRef, onHover }) {
     // During the pressure test, cut the barrel open so you see the oil push the piston
     s.cut = f > 5.05 && f < 6.3;
     g.current.rotation.x = 0.28 - p * 0.12;
-    const z = 0.9 + smooth(p * 1.2) * 0.1;
+    const z = (0.9 + smooth(p * 1.2) * 0.1) * fit;
     g.current.scale.setScalar(z);
   });
   return (
-    <group ref={g} position={[0.3, 0.35, 0]}>
+    <group ref={g} position={compact ? [0, 0.05, 0] : [0.3, 0.35, 0]}>
       <Cylinder stateRef={stateRef} accent={usePalette().accent} dims={DIMS} onHover={onHover} />
     </group>
   );
