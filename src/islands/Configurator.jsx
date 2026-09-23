@@ -21,7 +21,7 @@ function Preview({ bore, rod, stroke, pressure }) {
   // Scale to whatever the canvas can show (narrow on phones)
   function Fit({ children }) {
     const { viewport } = useThree();
-    return <group scale={Math.min(8.4, viewport.width * 0.95) / total} rotation={[0.18, -0.45, 0]} position={[-0.3, 0, 0]}>{children}</group>;
+    return <group scale={Math.min(8.4, viewport.width * 0.84) / total} rotation={[0.18, -0.45, 0]} position={[0, 0, 0]}>{children}</group>;
   }
   useEffect(() => {
     const io = new IntersectionObserver(([e]) => setLive(e.isIntersecting));
