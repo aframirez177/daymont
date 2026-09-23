@@ -1,14 +1,17 @@
 // Pinned section: vertical scroll drives a horizontal strip of 7 steps
 // while a procedural 3D cylinder assembles in sync.
 import { useEffect, useRef, useState } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Cylinder, Env, usePalette, smooth } from './cylinder.jsx';
+import { Cylinder, usePalette, smooth, dimsFrom, PARTS } from './cylinder.jsx';
+import { Stage } from './Stage.jsx';
+
+const DIMS = dimsFrom({ bore: 80, rod: 36, stroke: 500 });
 
 gsap.registerPlugin(ScrollTrigger);
 
-function Rig({ stateRef, progressRef }) {
+function Rig({ stateRef, progressRef, onHover }) {
   const g = useRef();
   useFrame((_, dt) => {
     const p = progressRef.current;
@@ -22,13 +25,15 @@ function Rig({ stateRef, progressRef }) {
     s.paint = smooth(f - 6);
     const ry = -0.95 + p * 1.25;
     g.current.rotation.y += (ry - g.current.rotation.y) * 0.08;
+    // During the pressure test, cut the barrel open so you see the oil push the piston
+    s.cut = f > 5.05 && f < 6.3;
     g.current.rotation.x = 0.28 - p * 0.12;
     const z = 0.9 + smooth(p * 1.2) * 0.1;
     g.current.scale.setScalar(z);
   });
   return (
     <group ref={g} position={[0.3, 0.35, 0]}>
-      <Cylinder stateRef={stateRef} accent={usePalette().accent} />
+      <Cylinder stateRef={stateRef} accent={usePalette().accent} dims={DIMS} onHover={onHover} />
     </group>
   );
 }
@@ -41,6 +46,7 @@ export default function Assembly({ steps }) {
   const stateRef = useRef({ assemble: 0, stroke: 0.25, paint: 0, pulse: 0 });
   const [active, setActive] = useState(0);
   const [live, setLive] = useState(false);
+  const [part, setPart] = useState(null);
 
   useEffect(() => {
     const el = section.current;
@@ -72,13 +78,9 @@ export default function Assembly({ steps }) {
   return (
     <section ref={section} className="assembly" id="armado" aria-labelledby="armado-title">
       <div className="stage" aria-hidden="true">
-        <Canvas frameloop={live ? 'always' : 'never'} dpr={[1, 1.75]} camera={{ position: [0, 1.1, 9], fov: 34 }} gl={{ antialias: true, alpha: true }}>
-          <Env />
-          <ambientLight intensity={0.25} />
-          <directionalLight position={[4, 6, 5]} intensity={1.6} />
-          <directionalLight position={[-6, -2, -4]} intensity={0.5} />
-          <Rig stateRef={stateRef} progressRef={progressRef} />
-        </Canvas>
+        <Stage live={live} camera={{ position: [0, 1.1, 9], fov: 34 }} controls shadowY={-1.2}>
+          <Rig stateRef={stateRef} progressRef={progressRef} onHover={setPart} />
+        </Stage>
       </div>
       <div className="stage-axes" aria-hidden="true">
         <i className="ax-h" /><i className="ax-v" />
@@ -91,6 +93,7 @@ export default function Assembly({ steps }) {
           Siete pasos, <span className="hl">un solo taller.</span>
         </h2>
       </div>
+      {part && <span className="assembly-part label"><b>{PARTS[part]}</b></span>}
       <div className="readout" aria-live="polite">
         <span className="label">Paso <b>{s.n} / 07</b></span>
         <span className="label"><b>{s.spec}</b></span>

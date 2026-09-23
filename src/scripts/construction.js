@@ -28,9 +28,16 @@ function fontMetrics(style) {
 }
 
 function lineBoxes(el) {
-  const range = document.createRange();
-  range.selectNodeContents(el);
-  const rects = [...range.getClientRects()].filter((r) => r.width > 2 && r.height > 2);
+  // Split headlines animate inner spans; measure the static word wrappers instead.
+  let rects;
+  const words = el.querySelectorAll('.w');
+  if (words.length) rects = [...words].map((w) => w.getBoundingClientRect());
+  else {
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    rects = [...range.getClientRects()];
+  }
+  rects = rects.filter((r) => r.width > 2 && r.height > 2);
   const lines = [];
   for (const r of rects) {
     const hit = lines.find((l) => Math.abs(l.top - r.top) < r.height * 0.5);
@@ -44,7 +51,7 @@ function make(layer, cls, css, delay) {
   const d = document.createElement('div');
   d.className = cls;
   Object.assign(d.style, css);
-  if (delay != null) d.style.transitionDelay = `${delay}s`;
+  if (delay != null) d.style.setProperty('--d', Math.min(0.7, delay * 0.55).toFixed(3));
   layer.appendChild(d);
   return d;
 }
@@ -83,8 +90,7 @@ function build(section) {
       if (n === 0) tag(layer, 'CAP', W - 44, capTop - 14, false, step());
       tag(layer, `BASE ${String(n + 1).padStart(2, '0')}`, W - 64, base + 6, true, step());
       if (n === 0) {
-        const x = make(layer, 'cl-x', { left: `${left}px`, top: `${base}px` });
-        x.style.transitionDelay = `${step() + 0.6}s`;
+        make(layer, 'cl-x', { left: `${left}px`, top: `${base}px` }, step() + 0.3);
       }
     });
     make(layer, 'cl v axis', { left: `${left}px`, top: 0, height: `${H}px` }, step());
@@ -111,29 +117,33 @@ function build(section) {
   return layer;
 }
 
-export function initConstruction(root = document) {
+// Each layer exposes --p (0→1). Lines read it in CSS with their own --d offset,
+// so the whole blueprint draws in lock-step with the scroll position.
+export function initConstruction({ ScrollTrigger, gsap } = {}, root = document) {
   const sections = [...root.querySelectorAll('[data-cl]')];
   if (!sections.length) return;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const io = new IntersectionObserver((entries) => {
-    for (const e of entries) {
-      if (e.isIntersecting) {
-        const layer = e.target.querySelector(':scope > .cl-layer');
-        layer && requestAnimationFrame(() => layer.classList.add('drawn'));
-        io.unobserve(e.target);
-      }
-    }
-  }, { threshold: 0.18 });
-
-  const buildAll = () => sections.forEach((s) => {
-    const layer = build(s);
-    if (reduce) layer.classList.add('drawn');
-  });
+  const buildAll = () => sections.forEach((s) => build(s));
 
   (document.fonts?.ready ?? Promise.resolve()).then(() => {
     buildAll();
-    if (!reduce) sections.forEach((s) => io.observe(s));
+    sections.forEach((s) => {
+      const layer = s.querySelector(':scope > .cl-layer');
+      if (reduce || !ScrollTrigger) { layer.style.setProperty('--p', 1); return; }
+      if (s.hasAttribute('data-cl-load')) {
+        // Above the fold: draw on load, then keep drafting while the hero scrolls away
+        const st = { p: 0 };
+        gsap.to(st, { p: 1, duration: 2.2, ease: 'power2.inOut', delay: 0.2, onUpdate: () => layer.style.setProperty('--p', st.p) });
+        return;
+      }
+      ScrollTrigger.create({
+        trigger: s, start: 'top 88%', end: 'top 12%', scrub: 0.4,
+        onUpdate: (self) => layer.style.setProperty('--p', self.progress.toFixed(4)),
+      });
+      gsap.fromTo(layer, { yPercent: 3 }, { yPercent: -3, ease: 'none', scrollTrigger: { trigger: s, start: 'top bottom', end: 'bottom top', scrub: true } });
+    });
+    ScrollTrigger?.refresh();
   });
 
   let t;

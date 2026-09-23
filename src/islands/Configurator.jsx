@@ -1,6 +1,58 @@
 // Door A: cylinder configurator → structured RFQ (WhatsApp / copy).
 // Forces are computed from the inputs (F = p · A); nothing is invented.
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useFrame } from '@react-three/fiber';
+import { Cylinder, dimsFrom, usePalette, PARTS } from './cylinder.jsx';
+import { Stage } from './Stage.jsx';
+
+// Live 3D preview: the model is rebuilt from the form (bore, rod, stroke)
+function Preview({ bore, rod, stroke, pressure }) {
+  const stateRef = useRef({ assemble: 1, stroke: 0.2, paint: 1, pulse: 0, explode: 0 });
+  const run = useRef(0);
+  const [cut, setCut] = useState(true);
+  const [part, setPart] = useState(null);
+  const [live, setLive] = useState(false);
+  const host = useRef();
+  const pal = usePalette();
+  const dims = useMemo(() => dimsFrom({ bore, rod, stroke }), [bore, rod, stroke]);
+  const fit = 8.4 / (dims.L * 2 + dims.cap * 2 + 1.4);
+  useEffect(() => {
+    const io = new IntersectionObserver(([e]) => setLive(e.isIntersecting));
+    io.observe(host.current);
+    return () => io.disconnect();
+  }, []);
+  useEffect(() => { run.current = 1; }, [bore, rod, stroke, pressure]);
+  function Drive() {
+    useFrame((_, dt) => {
+      const s = stateRef.current;
+      s.t = (s.t ?? 0) + dt;
+      if (run.current > 0) {
+        run.current = Math.max(0, run.current - dt / 3.2);
+        const k = 1 - run.current;
+        s.stroke = 0.1 + 0.85 * Math.sin(Math.min(1, k) * Math.PI);
+        s.pulse = Math.sin(Math.min(1, k) * Math.PI);
+      } else {
+        s.pulse *= 0.9;
+      }
+    });
+    return null;
+  }
+  return (
+    <div ref={host} className="cfg3d">
+      <Stage live={live} camera={{ position: [0, 1.2, 8.5], fov: 30 }} controls shadowY={-0.95}>
+        <Drive />
+        <group scale={fit} rotation={[0.18, -0.45, 0]} position={[-0.3, 0, 0]}>
+          <Cylinder stateRef={stateRef} accent={pal.accent} dims={dims} cutaway={cut} onHover={setPart} />
+        </group>
+      </Stage>
+      <div className="cfg3d-ui">
+        <button type="button" className="chip" onClick={() => { run.current = 1; }}>Probar carrera</button>
+        <button type="button" className={`chip${cut ? ' on' : ''}`} aria-pressed={cut} onClick={() => setCut((c) => !c)}>Corte</button>
+        <span className="label">{part ? PARTS[part] : 'Arrastra para girar'}</span>
+      </div>
+    </div>
+  );
+}
 
 const BORES = [25, 32, 40, 50, 63, 80, 100, 125, 140, 160, 180, 200, 250];
 const RODS = { 25: 12, 32: 14, 40: 18, 50: 22, 63: 28, 80: 36, 100: 45, 125: 56, 140: 63, 160: 70, 180: 80, 200: 90, 250: 110 };
@@ -109,6 +161,7 @@ ${f.company ? `• Empresa: ${f.company}\n` : ''}${f.name ? `• Contacto: ${f.n
         </form>
       </div>
       <div className="out">
+        <Preview bore={f.bore} rod={f.rod} stroke={f.stroke} pressure={f.pressure} />
         <span className="label">Plano esquemático · escala indicativa</span>
         <svg className="schematic" viewBox="0 0 560 190" role="img" aria-label={`Cilindro de ${f.bore} mm de camisa y ${f.stroke} mm de carrera`}>
           <g stroke="var(--construct)" strokeDasharray="4 4" strokeWidth="1">

@@ -82,6 +82,18 @@ const waDefault = wa('Hola Daymont, necesito información sobre un cilindro.');
 <body>
   <a class="skip" href="#main">Saltar al contenido</a>
   <div class="page-rails" aria-hidden="true"><div class="wrap"><i></i><i></i></div></div>
+  {path === '' && (
+    <aside class="hud" aria-label="Índice de secciones">
+      <div class="hud-ruler" aria-hidden="true"><span class="hud-mark"></span></div>
+      <ol class="hud-idx">
+        <li data-target="inicio">00 Inicio</li><li data-target="soluciones">01 Puertas</li><li data-target="armado">·· Armado</li>
+        <li data-target="taller">02 Taller</li><li data-target="catalogo">03 Línea</li><li data-target="configurador">04 Configurar</li>
+        <li data-target="reparar">05 Reparar</li><li data-target="confianza">06 Confianza</li><li data-target="preguntas">07 FAQ</li><li data-target="contacto">08 Contacto</li>
+      </ol>
+      <div class="hud-read label" aria-hidden="true"><span>Y <b data-y>000000</b></span><span data-sec></span></div>
+    </aside>
+  )}
+  <div class="crosshair" aria-hidden="true"><i class="cx"></i><i class="cy"></i><span class="cc"></span></div>
 
   <header class="site-header">
     <div class="wrap">
