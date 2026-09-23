@@ -248,6 +248,13 @@ h1, h2, h3, h4 { margin: 0; font-family: var(--display); text-transform: upperca
 .assembly .stage-axes { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
 .assembly .stage-axes .ax-h { position: absolute; left: 0; right: 0; top: 46%; height: 1px; background: repeating-linear-gradient(90deg, var(--axis) 0 2px, transparent 2px 8px); animation: march 1.6s linear infinite; }
 .assembly .stage-axes .ax-v { position: absolute; top: 0; bottom: 0; left: 52%; width: 1px; background: repeating-linear-gradient(180deg, var(--construct) 0 4px, transparent 4px 8px); }
+@media (max-width: 700px) {
+  .assembly .head .label { display: none; }
+  .assembly .readout { top: auto; bottom: calc(clamp(20px, 5vh, 56px) + 250px); left: var(--gutter); right: auto; text-align: left; }
+  .assembly .readout span:last-child { display: none; }
+  .assembly .panel { width: 72vw; padding: 16px; }
+  .assembly .panel .n { font-size: 40px; }
+}
 .assembly .fallback { position: absolute; inset: 0; display: grid; place-items: center; }
 
 /* ─── Taller: interactive simulators ───────────────────────────────── */
@@ -278,7 +285,7 @@ h1, h2, h3, h4 { margin: 0; font-family: var(--display); text-transform: upperca
   .tl-list button { padding: 10px 14px; border: 1px solid var(--line); margin-left: -1px; }
   .tl-list button[aria-selected="true"] { padding-left: 14px; background: var(--accent); color: var(--on-accent); }
   .tl-list button::before { display: none; }
-  .tl-word { font-size: 22px; }
+  .tl-word { font-size: 22px; white-space: nowrap; }
   .tl-list .label { display: none; }
   .tl-stage { aspect-ratio: 4 / 5; }
   .tl-text { grid-column: 1; }

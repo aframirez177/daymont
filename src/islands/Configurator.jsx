@@ -1,7 +1,7 @@
 // Door A: cylinder configurator → structured RFQ (WhatsApp / copy).
 // Forces are computed from the inputs (F = p · A); nothing is invented.
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { Cylinder, dimsFrom, usePalette, PARTS } from './cylinder.jsx';
 import { Stage } from './Stage.jsx';
 
@@ -17,7 +17,12 @@ function Preview({ bore, rod, stroke, pressure }) {
   const host = useRef();
   const pal = usePalette();
   const dims = useMemo(() => dimsFrom({ bore, rod, stroke }), [bore, rod, stroke]);
-  const fit = 8.4 / (dims.L * 2 + dims.cap * 2 + 1.4);
+  const total = dims.L * 2 + dims.cap * 2 + 1.4; // body + rod out + eye, in model units
+  // Scale to whatever the canvas can show (narrow on phones)
+  function Fit({ children }) {
+    const { viewport } = useThree();
+    return <group scale={Math.min(8.4, viewport.width * 0.95) / total} rotation={[0.18, -0.45, 0]} position={[-0.3, 0, 0]}>{children}</group>;
+  }
   useEffect(() => {
     const io = new IntersectionObserver(([e]) => setLive(e.isIntersecting));
     io.observe(host.current);
@@ -43,9 +48,9 @@ function Preview({ bore, rod, stroke, pressure }) {
     <div ref={host} className="cfg3d">
       <Stage live={live} camera={{ position: [0, 1.2, 8.5], fov: 30 }} controls shadowY={-0.95}>
         <Drive />
-        <group scale={fit} rotation={[0.18, -0.45, 0]} position={[-0.3, 0, 0]}>
+        <Fit>
           <Cylinder stateRef={stateRef} accent={pal.accent} dims={dims} cutaway={cut} onHover={setPart} />
-        </group>
+        </Fit>
       </Stage>
       <div className="cfg3d-ui">
         <button type="button" className="chip" onClick={() => { run.current = 1; }}>Probar carrera</button>
