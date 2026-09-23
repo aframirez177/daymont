@@ -4,10 +4,10 @@ import { Cylinder, Env, usePalette } from './cylinder.jsx';
 
 function Rig({ stateRef, pointer }) {
   const g = useRef();
-  const { viewport } = useThree();
-  const narrow = viewport.aspect < 1.1;
-  const pos = narrow ? [0.4, 1.7, 0] : [viewport.width * 0.1, 1.55, 0];
-  const scale = narrow ? 0.62 : Math.min(1.25, viewport.width / 10.5);
+  const { viewport, size } = useThree();
+  const compact = size.width < 820; // mobile/tablet: canvas is a band above the headline
+  const pos = compact ? [0.35, -0.05, 0] : [viewport.width * 0.1, 1.55, 0];
+  const scale = compact ? Math.min(1.1, viewport.width / 7.2) : Math.min(1.25, viewport.width / 10.5);
   useFrame((_, dt) => {
     const s = stateRef.current;
     // Rod "breathes" in idle, and extends as the hero scrolls away

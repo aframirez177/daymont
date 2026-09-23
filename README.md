@@ -5,6 +5,7 @@ Rediseño demo para **Daymont S.A.S.**, que fabrica cilindros hidráulicos y neu
 - **Demo en vivo:** https://aframirez177.github.io/daymont/
 - **Estrategia / kickoff:** https://aframirez177.github.io/daymont/estrategia/ (página interna, no indexada)
 - **Design system en Figma:** https://www.figma.com/design/WCcyGWcwqU5x9EpPMg6HUM
+- **Design system en Claude:** https://claude.ai/artifact/6vioJ8gi9MCQkt9eGTpeTX
 
 ## Stack
 - Astro 5, que genera el HTML estático en el build, con islas React para las partes interactivas.

@@ -25,6 +25,8 @@
 
 ## Design system locations
 - Figma: https://www.figma.com/design/WCcyGWcwqU5x9EpPMg6HUM (Palette variables with 3 modes: Taller / Azul / Acero)
+- Claude design system: https://claude.ai/artifact/6vioJ8gi9MCQkt9eGTpeTX (3 themes, logos, Button / DoorCard / ConstructionLine / SpecCard)
+- Live demo: https://aframirez177.github.io/daymont/ · Repo: https://github.com/aframirez177/daymont
 - Tokens: `brand/tokens.json`
 - First exploration (benchmark, palettes, logo studies): `docs/exploracion/daymont-exploracion.html`
 
