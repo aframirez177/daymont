@@ -13,8 +13,8 @@ function Rig({ stateRef, ui, onHover }) {
   const g = useRef();
   const { size, viewport } = useThree();
   const compact = size.width < 820;
-  const pos = compact ? [0.2, 0.15, 0] : [viewport.width * 0.17, 1.2, 0];
-  const scale = compact ? Math.min(0.95, viewport.width / 8) : Math.min(1.05, viewport.width / 12);
+  const pos = compact ? [0.25, 0.75, 0] : [viewport.width * 0.17, 1.2, 0];
+  const scale = compact ? Math.min(1.1, viewport.width / 6.6) : Math.min(1.05, viewport.width / 12);
   useFrame((_, dt) => {
     const s = stateRef.current;
     s.t = (s.t ?? 0) + dt;
@@ -41,6 +41,8 @@ export default function HeroCylinder() {
   const [live, setLive] = useState(true);
   const [part, setPart] = useState(null);
   const [tip, setTip] = useState({ x: 0, y: 0 });
+  const [fine, setFine] = useState(false);
+  useEffect(() => setFine(matchMedia('(pointer: fine)').matches), []);
 
   useEffect(() => {
     const el = host.current;
@@ -70,7 +72,7 @@ export default function HeroCylinder() {
         <button type="button" aria-pressed={ui.current.cut} onClick={toggle('cut')}>Corte</button>
         <button type="button" aria-pressed={ui.current.explode} onClick={toggle('explode')}>Despiece</button>
         <span className="hero3d-read" aria-live="polite">
-          {ui.current.act ? `Ø${BORE} · ${PRESSURE} bar → ${pushKN.toFixed(1)} kN` : 'Arrastra para girar'}
+          {ui.current.act ? `Ø${BORE} · ${PRESSURE} bar → ${pushKN.toFixed(1)} kN` : (fine ? 'Arrastra para girar' : 'Prueba el cilindro')}
         </span>
       </div>
       {part && <span className="hero3d-tip" style={{ transform: `translate(${tip.x + 14}px, ${tip.y + 14}px)` }}>{PARTS[part]}</span>}

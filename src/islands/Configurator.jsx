@@ -12,6 +12,8 @@ function Preview({ bore, rod, stroke, pressure }) {
   const [cut, setCut] = useState(true);
   const [part, setPart] = useState(null);
   const [live, setLive] = useState(false);
+  const [fine, setFine] = useState(false);
+  useEffect(() => setFine(matchMedia('(pointer: fine)').matches), []);
   const host = useRef();
   const pal = usePalette();
   const dims = useMemo(() => dimsFrom({ bore, rod, stroke }), [bore, rod, stroke]);
@@ -48,7 +50,7 @@ function Preview({ bore, rod, stroke, pressure }) {
       <div className="cfg3d-ui">
         <button type="button" className="chip" onClick={() => { run.current = 1; }}>Probar carrera</button>
         <button type="button" className={`chip${cut ? ' on' : ''}`} aria-pressed={cut} onClick={() => setCut((c) => !c)}>Corte</button>
-        <span className="label">{part ? PARTS[part] : 'Arrastra para girar'}</span>
+        <span className="label">{part ? PARTS[part] : (fine ? 'Arrastra para girar' : 'Modelo a escala de tus datos')}</span>
       </div>
     </div>
   );
