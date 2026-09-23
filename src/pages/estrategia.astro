@@ -1,0 +1,128 @@
+---
+import Base from '../layouts/Base.astro';
+import { company, years } from '../data/site.js';
+const base = import.meta.env.BASE_URL;
+const u = (p = '') => `${base}${p}`.replace(/\/{2,}/g, '/');
+
+const bench = [
+  { n: 'COHA', s: 'Bogotá · desde 1974', c: ['#111111', '#F2C230', '#FFFFFF'], sell: 'Stock masivo (+22.000 ítems), fabricación e ingeniería, 4 sedes', funnel: 'Slider → catálogo → "Adquirir" → formulario/teléfono → asesor', trust: 'Cifras de volumen, +25 marcas aliadas', lesson: 'Rival a vencer. Pone números duros en portada.' },
+  { n: 'Hydraulic Tech', s: 'Fontibón · 10+ años', c: ['#8E1B1B', '#1B1F3B', '#FFFFFF'], sell: 'Importación, reparación, proyectos; Rexroth/Parker', funnel: 'Hero → "Agendar" + WhatsApp flotante → asesor', trust: 'Logos: Caterpillar, Komatsu, Epiroc', lesson: 'WhatsApp visible es higiene; los logos de clientes pesan.' },
+  { n: 'Sermec', s: 'Bogotá', c: ['#1D2A6B', '#FFFFFF', '#222222'], sell: 'Fabricación y mantenimiento de cilindros', funnel: 'Página de entrada → menú → contacto', trust: 'Casi ninguna visible', lesson: 'Así se ve Daymont hoy. Es el grupo a abandonar.' },
+  { n: 'Daymont hoy', s: 'Bogotá · desde 1979', c: ['#1F5FA8', '#6B6B6B', '#FFFFFF'], sell: 'Fabricación propia + distribución (ISO 6431, Vickers)', funnel: 'Slider → PDF → 5 correos por área → PBX/FAX', trust: `${years} años, enterrados en "Empresa"`, lesson: 'La mejor historia del grupo y el peor embudo.', us: true },
+  { n: 'Festo', s: 'Global', c: ['#0091DC', '#FFFFFF', '#333333'], sell: 'Tienda online y configuradores', funnel: 'Búsqueda → configurador → ref. + CAD → carrito', trust: 'Ficha técnica, CAD, certificados', lesson: 'El configurador es factible para Daymont.' },
+  { n: 'Xometry / Protolabs', s: 'Manufactura digital', c: ['#1C4DD4', '#FFFFFF', '#0B1220'], sell: 'Piezas CNC, 3D, chapa', funnel: 'Subir CAD → cotización → pedido', trust: 'Precio y plazo inmediatos', lesson: 'Modelo para la Puerta C (sin cotización instantánea).' },
+];
+---
+<Base title="Estrategia y kickoff · Daymont (interno)" description="Kickoff del rediseño de Daymont: benchmark, posicionamiento, embudo de conversión y hoja de ruta." path="estrategia/" noindex>
+  <section class="section" data-cl style="padding-top:calc(var(--header-h) + clamp(48px,8vw,110px))">
+    <div class="wrap over">
+      <div class="eyebrow"><span class="label">Project kickoff · Sprint 01</span><span class="label">Documento interno · no indexado</span></div>
+      <h1 class="display-l" data-cl-text data-cl-label="KICKOFF">La oportunidad <span class="hl">de Daymont.</span></h1>
+      <div class="split" style="margin-top:clamp(28px,4vw,48px)">
+        <p class="lead">Daymont tiene la mejor historia del sector ({company.founded}, taller integrado, fabricación propia) y el embudo más débil: catálogos en PDF, cinco correos por área, cero WhatsApp y cero texto indexable. El 80 % de los compradores B2B hace el primer contacto cuando ya recorrió cerca del 70 % de su decisión (6sense / Demand Gen Report). Si el sitio no resuelve la duda técnica, cotizan con otro.</p>
+        <dl class="spec-rows" style="align-self:start">
+          <div><dt>Cliente</dt><dd>{company.name}</dd></div>
+          <div><dt>Vertical</dt><dd>Industrial B2B (skill: industrial-b2b-site)</dd></div>
+          <div><dt>Fase</dt><dd>Demo de venta · cliente real</dd></div>
+          <div><dt>Geografía</dt><dd>Colombia · ES-CO</dd></div>
+          <div><dt>Stack</dt><dd>Astro + React islands · GitHub Pages</dd></div>
+          <div><dt>Decisión pendiente</dt><dd>Paleta (Taller recomendada)</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--surface)">
+    <div class="wrap">
+      <div class="eyebrow"><span class="label">01 · Benchmark</span><span class="label">Paletas · método de venta · embudo</span></div>
+      <div class="table-wrap">
+        <table class="bench">
+          <thead><tr><th>Empresa</th><th>Paleta</th><th>Venta</th><th>Embudo</th><th>Confianza</th><th>Lección</th></tr></thead>
+          <tbody>
+            {bench.map((b) => (
+              <tr class={b.us ? 'us' : undefined}>
+                <td>{b.n}<br /><span class="label">{b.s}</span></td>
+                <td><div class="swatches">{b.c.map((c) => <i style={`background:${c}`}></i>)}</div></td>
+                <td>{b.sell}</td><td>{b.funnel}</td><td>{b.trust}</td><td>{b.lesson}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="note" style="margin-top:12px">Colores aproximados, tomados de cada sitio. Azul = Festo/SMC/Sermec · Amarillo-negro = COHA/Parker · Rojo = Rexroth/Danfoss. Naranja + negro estaba libre.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap" style="display:grid;gap:32px">
+      <div class="eyebrow" style="margin:0"><span class="label">02 · Embudo</span><span class="label">Hoy vs. propuesta implementada en este demo</span></div>
+      <div style="display:grid;gap:10px">
+        <span class="label">Típico del sector</span>
+        <div class="flow">
+          <div class="st"><b>Entrada</b>Google / referido</div><span class="ar">→</span>
+          <div class="st"><b>Home</b>Slider genérico</div><span class="ar">→</span>
+          <div class="st leak"><b>Fuga</b>PDF o nada</div><span class="ar">→</span>
+          <div class="st"><b>Contacto</b>Form / teléfono</div><span class="ar">→</span>
+          <div class="st leak"><b>Fuga</b>Días esperando</div><span class="ar">→</span>
+          <div class="st"><b>Cierre</b>Cotización por correo</div>
+        </div>
+      </div>
+      <div style="display:grid;gap:10px">
+        <span class="label">Daymont (este demo)</span>
+        <div class="flow">
+          <div class="st"><b>Entrada</b>5 landings SEO + IA + referido</div><span class="ar">→</span>
+          <div class="st"><b>Prueba</b>Armado 3D, taller, {years} años</div><span class="ar">→</span>
+          <div class="st hot"><b>3 puertas</b>Configurar · Reparar · Fabricar</div><span class="ar">→</span>
+          <div class="st"><b>Solicitud</b>Estructurada por WhatsApp</div><span class="ar">→</span>
+          <div class="st"><b>Seguimiento</b>n8n + CRM (fase 2)</div><span class="ar">→</span>
+          <div class="st"><b>Postventa</b>Recordatorio de mantenimiento</div>
+        </div>
+      </div>
+      <div class="split">
+        <div style="display:grid;gap:14px;align-content:start">
+          <h2 class="h2">Mezclarse en higiene</h2>
+          <ul class="ticks">
+            <li>Fichas técnicas en HTML (no PDF)</li><li>WhatsApp visible y teléfono en formato 601</li>
+            <li>Marcas: Vickers by Danfoss, ISO 6431</li><li>Tiempos de respuesta y cobertura nacional</li>
+            <li>Logos de clientes con permiso</li><li>Dirección, NIT y fotos reales de planta</li>
+          </ul>
+        </div>
+        <div style="display:grid;gap:14px;align-content:start">
+          <h2 class="h2"><span class="hl">Diferenciarse</span> en identidad y embudo</h2>
+          <ul class="ticks">
+            <li>Negro taller + naranja seguridad (color libre en el nicho)</li><li>Logo propio: D + pistón, 5 trazos</li>
+            <li>Líneas de construcción: lenguaje de plano técnico</li><li>Cilindro 3D que se arma con el scroll</li>
+            <li>Configurador con cálculo de fuerza (F = P × A)</li><li>"Del plano a la pieza, sin salir del taller"</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--surface)">
+    <div class="wrap">
+      <div class="eyebrow"><span class="label">03 · Qué medimos</span><span class="label">Eventos ya instrumentados (dataLayer)</span></div>
+      <div class="kpis">
+        <div><span class="data">rfq_submit</span><p class="small muted">Solicitudes del configurador (Puerta A). KPI principal.</p></div>
+        <div><span class="data">door_B</span><p class="small muted">Reparaciones iniciadas por WhatsApp.</p></div>
+        <div><span class="data">door_C</span><p class="small muted">Planos enviados para piezas a medida.</p></div>
+        <div><span class="data">cta_click</span><p class="small muted">Todos los CTA con origen (hero, header, flotante, landing).</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split">
+      <div style="display:grid;gap:16px;align-content:start">
+        <span class="label">04 · Hoja de ruta</span>
+        <h2 class="h1">De demo <span class="hl">a producción.</span></h2>
+      </div>
+      <ol class="process" style="grid-template-columns:1fr">
+        <li><strong>Mañana · decisión de paleta</strong><span class="small muted">Taller (recomendada) · Azul · Acero. Cambiar con el selector del header.</span></li>
+        <li><strong>Datos del cliente</strong><span class="small muted">[CLIENT] WhatsApp, correo, NIT, logos de clientes, tiempos de entrega, marcas autorizadas, fotos del taller.</span></li>
+        <li><strong>Producción</strong><span class="small muted">Dominio daymont.com.co, formulario con carga de archivos → n8n → CRM, analítica sin cookies.</span></li>
+        <li><strong>Contenido</strong><span class="small muted">Fichas por referencia, casos documentados, video del armado en secuencia de imágenes.</span></li>
+      </ol>
+    </div>
+  </section>
+</Base>

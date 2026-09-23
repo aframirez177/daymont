@@ -1,0 +1,29 @@
+---
+// Line-drawing of a cylinder used as product thumbnail until real photos exist.
+interface Props { variant?: number; label?: string }
+const { variant = 0, label = '' } = Astro.props;
+const v = [
+  { bw: 150, bh: 54, rod: 70, rh: 14, ties: true },
+  { bw: 120, bh: 64, rod: 90, rh: 20, ties: false },
+  { bw: 170, bh: 44, rod: 50, rh: 12, ties: true },
+  { bw: 90,  bh: 70, rod: 30, rh: 16, ties: false },
+][variant % 4];
+const x = 22, cy = 80;
+---
+<svg viewBox="0 0 300 160" aria-hidden="true">
+  <g stroke="var(--construct)" stroke-dasharray="4 4" stroke-width="1" fill="none">
+    <line x1="0" y1={cy} x2="300" y2={cy} />
+    <line x1={x} y1="10" x2={x} y2="150" />
+    <line x1={x + 12 + v.bw} y1="10" x2={x + 12 + v.bw} y2="150" />
+  </g>
+  <g fill="none" stroke="var(--text)" stroke-width="2">
+    <rect x={x} y={cy - v.bh / 2 - 5} width="12" height={v.bh + 10} />
+    <rect x={x + 12} y={cy - v.bh / 2} width={v.bw} height={v.bh} />
+    <rect x={x + 12 + v.bw} y={cy - v.bh / 2 - 5} width="12" height={v.bh + 10} />
+    <rect x={x + 24 + v.bw} y={cy - v.rh / 2} width={v.rod} height={v.rh} />
+    <circle cx={x + 24 + v.bw + v.rod + 9} cy={cy} r="9" />
+  </g>
+  {v.ties && <g stroke="var(--muted)" stroke-width="1"><line x1={x - 4} y1={cy - v.bh / 2 - 1} x2={x + 28 + v.bw} y2={cy - v.bh / 2 - 1} /><line x1={x - 4} y1={cy + v.bh / 2 + 1} x2={x + 28 + v.bw} y2={cy + v.bh / 2 + 1} /></g>}
+  <rect x={x + 12 + v.bw * 0.4} y={cy - v.bh / 2 + 2} width="8" height={v.bh - 4} fill="var(--accent)" />
+  <text x="290" y="150" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="9" fill="var(--muted)" letter-spacing="1">{label}</text>
+</svg>

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /daymont/estrategia/
+
+Sitemap: https://aframirez177.github.io/daymont/sitemap-index.xml

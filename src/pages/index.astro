@@ -1,0 +1,240 @@
+---
+import Base from '../layouts/Base.astro';
+import Blueprint from '../components/Blueprint.astro';
+import HeroCylinder from '../islands/HeroCylinder.jsx';
+import Assembly from '../islands/Assembly.jsx';
+import Configurator from '../islands/Configurator.jsx';
+import { company, years, doors, assembly, capabilities, catalog, faq, wa, solutions } from '../data/site.js';
+
+const base = import.meta.env.BASE_URL;
+const u = (p = '') => `${base}${p}`.replace(/\/{2,}/g, '/');
+const waRepair = wa('Hola Daymont, quiero reparar un cilindro. Adjunto foto de la placa y del daño. Ciudad: ');
+const waPart = wa('Hola Daymont, quiero fabricar una pieza. Adjunto plano / STL / fotos con medidas. Cantidad: ');
+const doorHref = (h: string) => (h === 'wa:repair' ? waRepair : u(h));
+
+const schema = [
+  {
+    '@context': 'https://schema.org', '@type': 'WebSite', name: 'Daymont', url: new URL(u(''), Astro.site).href, inLanguage: 'es-CO',
+  },
+  {
+    '@context': 'https://schema.org', '@type': 'FAQPage',
+    mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+  },
+];
+---
+<Base
+  title="Daymont · Cilindros hidráulicos y neumáticos en Bogotá desde 1979"
+  description={`Fabricación, reparación y distribución de cilindros hidráulicos y neumáticos en Bogotá desde ${company.founded}. Configura tu cilindro, calcula la fuerza y cotiza por WhatsApp.`}
+  schema={schema}
+>
+  <!-- HERO -->
+  <section class="hero" data-cl>
+    <div class="hero-3d"><HeroCylinder client:idle /></div>
+    <div class="wrap over">
+      <div class="meta-row">
+        <span class="label">Bogotá · <b>Desde {company.founded}</b></span>
+        <span class="label">Hidráulica · <b>Neumática</b></span>
+        <span class="label">Diseño · <b>Fabricación · Reparación</b></span>
+      </div>
+      <h1 class="display-xl" data-cl-text data-cl-label="EJE 01" data-cl-cota={`${company.founded} — ${new Date().getFullYear()} · ${years} AÑOS`}>
+        Fuerza lineal<br /><span class="hl">desde 1979.</span>
+      </h1>
+      <div class="hero-foot">
+        <p class="lead">Diseñamos, fabricamos y reparamos cilindros hidráulicos y neumáticos. Torno, CNC, impresión 3D, soldadura y pintura en un mismo taller en Bogotá.</p>
+        <div style="display:grid;gap:18px;justify-items:start">
+          <div class="btns">
+            <a class="btn primary" href="#configurador" data-track="hero_configurar">Configurar un cilindro <span class="arr">→</span></a>
+            <a class="btn" href={waRepair} target="_blank" rel="noopener" data-track="hero_reparar">Reparar un cilindro</a>
+          </div>
+          <span class="scroll-cue label"><i></i> Scroll para ver cómo se arma</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROOF -->
+  <div class="wrap">
+    <div class="proof">
+      <div class="rv"><span class="num">{company.founded}</span><span class="label">Año de fundación</span></div>
+      <div class="rv" data-d="80"><span class="num">{years}</span><span class="label">Años en la industria</span></div>
+      <div class="rv" data-d="160"><span class="num">5</span><span class="label">Procesos en taller propio</span></div>
+      <div class="rv" data-d="240"><span class="num">3</span><span class="label">Formas de empezar</span></div>
+    </div>
+  </div>
+
+  <!-- DOORS -->
+  <section class="section" id="soluciones" data-cl>
+    <div class="wrap over">
+      <div class="eyebrow"><span class="label">01 · Cómo empezar</span><span class="label">Elige tu puerta</span></div>
+      <h2 class="h1" data-cl-text style="max-width:14ch;margin-bottom:clamp(32px,5vw,64px)">Tres puertas. <span class="hl">Una respuesta clara.</span></h2>
+      <div class="doors">
+        {doors.map((d, i) => (
+          <article class="door rv" data-d={i * 90} id={d.id === 'configurar' ? undefined : `puerta-${d.id}`}>
+            <span class="k">{d.key}</span>
+            <h3 class="h2">{d.title}</h3>
+            <p class="muted">{d.text}</p>
+            <div class="foot">
+              <span class="label">Para: <b>{d.for}</b></span>
+              <a class={`btn${i === 0 ? ' primary' : ''}`} href={doorHref(d.href)} {...(d.href.startsWith('wa:') ? { target: '_blank', rel: 'noopener' } : {})} data-track={`door_${d.key}`}>{d.cta} <span class="arr">→</span></a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- HORIZONTAL ASSEMBLY -->
+  <Assembly client:idle steps={assembly} />
+
+  <!-- TALLER (immersive sticky) -->
+  <section class="taller" id="taller" aria-labelledby="taller-title">
+    <div class="pin" data-cl>
+      <div class="ghost-word" aria-hidden="true">TORNO</div>
+      <div class="wrap over">
+        <div class="eyebrow"><span class="label">02 · El taller</span><span class="label" data-counter>01 / 05</span></div>
+        <h2 id="taller-title" class="sr-only">Capacidades del taller Daymont</h2>
+        <div class="words" data-cl-text aria-hidden="true">
+          {capabilities.map((c) => <div class="word" data-short={c.word.split(' ')[0].toUpperCase()}>{c.word}</div>)}
+        </div>
+        <div class="info">
+          <div class="dots">{capabilities.map(() => <i></i>)}</div>
+          <div>
+            {capabilities.map((c, i) => (
+              <div data-cap hidden={i !== 0}>
+                <p class="label" style="margin-bottom:6px"><b>{c.code}</b> · {c.kind}</p>
+                <p class="lead">{c.text}</p>
+              </div>
+            ))}
+          </div>
+          <span class="label">Del plano a la pieza,<br />sin salir del taller</span>
+        </div>
+        <ul class="sr-only">{capabilities.map((c) => <li>{c.word}: {c.text}</li>)}</ul>
+      </div>
+    </div>
+    <div class="steps-rail" aria-hidden="true"></div>
+  </section>
+
+  <!-- CATALOG -->
+  <section class="section" id="catalogo" data-cl>
+    <div class="wrap over">
+      <div class="eyebrow"><span class="label">03 · Línea de producto</span><span class="label">Fabricación propia + distribución</span></div>
+      <h2 class="h1" data-cl-text style="max-width:16ch;margin-bottom:clamp(32px,5vw,64px)">Lo que fabricamos <span class="hl">y lo que tenemos.</span></h2>
+      <div class="catalog">
+        {catalog.map((g, gi) => (
+          <div class="cat-group">
+            <div><h3 class="h2">{g.group}</h3></div>
+            <div class="cards">
+              {g.items.map((it, i) => (
+                <article class="card rv" data-d={i * 70}>
+                  <div class="thumb"><Blueprint variant={i + gi} label={`DYM-${gi ? 'N' : 'H'}-0${i + 1}`} /></div>
+                  <span class="chip">{it.tag}</span>
+                  <h4 class="h3">{it.name}</h4>
+                  <dl class="spec-rows">{it.specs.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
+                </article>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CONFIGURATOR -->
+  <section class="section" id="configurador" data-cl style="background:var(--surface)">
+    <div class="wrap over">
+      <div class="eyebrow"><span class="label">04 · Puerta A</span><span class="label">Cotización estructurada</span></div>
+      <div class="split" style="margin-bottom:clamp(32px,5vw,56px);align-items:end">
+        <h2 class="h1" data-cl-text>Configura tu cilindro. <span class="hl">Calcula la fuerza.</span></h2>
+        <p class="lead muted">Los datos que ingeniería necesita, organizados en una sola solicitud. La fuerza se calcula al instante con tu presión de trabajo.</p>
+      </div>
+      <Configurator client:visible whatsapp={company.whatsapp} placeholder={company.whatsappIsPlaceholder} />
+    </div>
+  </section>
+
+  <!-- REPAIR + PARTS -->
+  <section class="section" id="reparar" data-cl>
+    <div class="wrap over">
+      <div class="eyebrow"><span class="label">05 · Puertas B y C</span><span class="label">Reparación · Piezas a medida</span></div>
+      <div class="split">
+        <div style="display:grid;gap:24px;align-content:start">
+          <h2 class="h1" data-cl-text>Reparar <span class="hl">B</span></h2>
+          <p class="lead">Una foto de la placa y otra del daño. Con eso empezamos.</p>
+          <ol class="process" style="grid-template-columns:1fr 1fr">
+            <li><strong>Fotos por WhatsApp</strong><span class="small muted">Placa, daño y ciudad.</span></li>
+            <li><strong>Diagnóstico</strong><span class="small muted">Desarme, medición, informe.</span></li>
+            <li><strong>Reparación</strong><span class="small muted">Sellos, vástago, camisa.</span></li>
+            <li><strong>Prueba y entrega</strong><span class="small muted">Presión, fugas, pintura.</span></li>
+          </ol>
+          <div class="btns"><a class="btn primary" href={waRepair} target="_blank" rel="noopener" data-track="repair_whatsapp">Enviar fotos por WhatsApp <span class="arr">→</span></a></div>
+        </div>
+        <div id="fabricar" style="display:grid;gap:24px;align-content:start">
+          <h2 class="h1">Fabricar <span class="hl">C</span></h2>
+          <p class="lead">Plano, STL o una pieza de muestra. Prototipo en 3D, pieza final en metal.</p>
+          <ul class="ticks">
+            <li>Formatos: PDF, DWG/DXF, STEP, STL o fotos con medidas</li>
+            <li>Prototipo en impresión 3D (PLA o resina) para validar ajuste</li>
+            <li>Pieza final en torno o fresado CNC</li>
+            <li>Soldadura, ensamble y pintura en el mismo taller</li>
+          </ul>
+          <div class="btns">
+            <a class="btn primary" href={waPart} target="_blank" rel="noopener" data-track="part_whatsapp">Enviar plano por WhatsApp <span class="arr">→</span></a>
+            <a class="btn" href={u('soluciones/fabricacion-de-piezas/')}>Ver capacidades</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST -->
+  <section class="section" data-cl style="background:var(--surface)">
+    <div class="wrap over">
+      <div class="eyebrow"><span class="label">06 · Confianza</span><span class="label">Evidencia, no adjetivos</span></div>
+      <h2 class="h1" data-cl-text style="max-width:15ch;margin-bottom:clamp(32px,5vw,56px)">{years} años <span class="hl">moviendo la industria.</span></h2>
+      <div class="timeline">
+        <div class="rv"><span class="yr">1979</span><span class="label">Fundación</span><p class="small muted">Nace en Bogotá como Diseños, Automatizaciones y Montajes.</p></div>
+        <div class="rv" data-d="80"><span class="yr">2 líneas</span><span class="label">Hidráulica y neumática</span><p class="small muted">Fabricación propia y distribución de marcas como Vickers.</p></div>
+        <div class="rv" data-d="160"><span class="yr">5 procesos</span><span class="label">Taller integrado</span><p class="small muted">Torno, CNC, impresión 3D, soldadura y pintura.</p></div>
+        <div class="rv" data-d="240"><span class="yr">Hoy</span><span class="label">Plataforma digital</span><p class="small muted">Configurador, reparación por WhatsApp y piezas a medida.</p></div>
+      </div>
+      <div style="margin-top:clamp(40px,6vw,72px);display:grid;gap:14px">
+        <span class="label">Empresas que confían en Daymont</span>
+        <div class="cards logos">
+          {[1,2,3,4,5,6].map(() => <div class="card" style="min-height:90px;place-items:center;border:1px dashed var(--line)"><span class="note">[CLIENT: logo]</span></div>)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="preguntas" data-cl>
+    <div class="wrap over split">
+      <div style="display:grid;gap:18px;align-content:start">
+        <div class="label">07 · Preguntas frecuentes</div>
+        <h2 class="h1" data-cl-text>Respuestas <span class="hl">directas.</span></h2>
+        <p class="muted">¿Tienes un caso específico? Escríbenos con una foto y te respondemos con la referencia.</p>
+      </div>
+      <div class="faq">
+        {faq.map(([q, a], i) => (<details open={i === 0}><summary>{q}</summary><p>{a}</p></details>))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section" id="contacto" data-cl style="background:var(--surface)">
+    <div class="wrap over contact">
+      <div style="display:grid;gap:22px">
+        <span class="label">08 · Contacto</span>
+        <h2 class="display-l" data-cl-text>Hablemos <span class="hl">de carga.</span></h2>
+        <div class="btns">
+          <a class="btn primary" href="#configurador" data-track="contact_configurar">Configurar cilindro <span class="arr">→</span></a>
+          <a class="btn" href={wa('Hola Daymont, necesito asesoría técnica.')} target="_blank" rel="noopener" data-track="contact_whatsapp">WhatsApp</a>
+        </div>
+      </div>
+      <dl>
+        <div><dt>Dirección</dt><dd>{company.address}<br />{company.city}, Colombia · <a href={company.mapsUrl} target="_blank" rel="noopener">Ver mapa</a></dd></div>
+        <div><dt>Teléfono</dt><dd><a href={`tel:${company.phone.replace(/\s/g, '')}`}>{company.phoneDisplay}</a></dd></div>
+        <div><dt>Soluciones</dt><dd>{solutions.map((s, i) => <>{i > 0 && ' · '}<a href={u(`soluciones/${s.slug}/`)}>{s.short}</a></>)}</dd></div>
+      </dl>
+    </div>
+  </section>
+</Base>

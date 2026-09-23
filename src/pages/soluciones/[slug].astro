@@ -1,0 +1,91 @@
+---
+import Base from '../../layouts/Base.astro';
+import Blueprint from '../../components/Blueprint.astro';
+import { solutions, doors, company, wa } from '../../data/site.js';
+
+export function getStaticPaths() {
+  return solutions.map((s) => ({ params: { slug: s.slug }, props: { s } }));
+}
+const { s } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const u = (p = '') => `${base}${p}`.replace(/\/{2,}/g, '/');
+const door = doors.find((d) => d.key === s.door)!;
+const url = new URL(u(`soluciones/${s.slug}/`), Astro.site).href;
+const cta = door.key === 'A'
+  ? { href: u('#configurador'), label: 'Configurar un cilindro', ext: false }
+  : door.key === 'B'
+    ? { href: wa(`Hola Daymont, vengo de la página de ${s.short}. Adjunto foto de la placa y del daño.`), label: 'Enviar fotos por WhatsApp', ext: true }
+    : { href: wa(`Hola Daymont, vengo de la página de ${s.short}. Quiero fabricar una pieza; adjunto plano o fotos.`), label: 'Enviar plano por WhatsApp', ext: true };
+
+const schema = [
+  {
+    '@context': 'https://schema.org', '@type': 'Service', name: s.title, description: s.description, url,
+    provider: { '@id': `${new URL(u(''), Astro.site).href}#org` }, areaServed: { '@type': 'Country', name: 'Colombia' },
+  },
+  {
+    '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Inicio', item: new URL(u(''), Astro.site).href },
+      { '@type': 'ListItem', position: 2, name: s.short, item: url },
+    ],
+  },
+  {
+    '@context': 'https://schema.org', '@type': 'FAQPage',
+    mainEntity: s.faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+  },
+];
+const others = solutions.filter((o) => o.slug !== s.slug);
+---
+<Base title={`${s.title} · Daymont`} description={s.description} path={`soluciones/${s.slug}/`} schema={schema}>
+  <section class="section" data-cl style="padding-top:calc(var(--header-h) + clamp(48px,8vw,110px))">
+    <div class="wrap over">
+      <nav aria-label="Ruta" class="label" style="margin-bottom:24px"><a href={u('')}>Inicio</a> / <b>{s.short}</b></nav>
+      <h1 class="display-l" data-cl-text data-cl-label={`PUERTA ${door.key}`} style="max-width:14ch">{s.title}</h1>
+      <div class="split" style="margin-top:clamp(28px,4vw,48px);align-items:start">
+        <div style="display:grid;gap:22px">
+          <p class="lead">{s.answer}</p>
+          <div class="btns">
+            <a class="btn primary" href={cta.href} {...(cta.ext ? { target: '_blank', rel: 'noopener' } : {})} data-track={`solution_${s.slug}`}>{cta.label} <span class="arr">→</span></a>
+            <a class="btn" href={`tel:${company.phone.replace(/\s/g, '')}`}>{company.phoneDisplay}</a>
+          </div>
+        </div>
+        <div class="card" style="background:var(--surface)"><div class="thumb" style="background:transparent"><Blueprint variant={solutions.indexOf(s)} label={`DYM · ${s.short.toUpperCase()}`} /></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--surface)">
+    <div class="wrap split">
+      <div style="display:grid;gap:16px;align-content:start">
+        <span class="label">Qué incluye</span>
+        <h2 class="h1">Alcance</h2>
+      </div>
+      <ul class="ticks lead">{s.points.map((p) => <li>{p}</li>)}</ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split">
+      <div style="display:grid;gap:16px;align-content:start">
+        <span class="label">Preguntas frecuentes</span>
+        <h2 class="h1">{s.short}</h2>
+      </div>
+      <div class="faq">{s.faq.map(([q, a], i) => <details open={i === 0}><summary>{q}</summary><p>{a}</p></details>)}</div>
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--surface)">
+    <div class="wrap">
+      <div class="eyebrow"><span class="label">Otras soluciones</span></div>
+      <div class="doors four">
+        {others.map((o) => (
+          <a class="door" href={u(`soluciones/${o.slug}/`)} style="min-height:200px;text-decoration:none">
+            <span class="label">Puerta {o.door}</span>
+            <h3 class="h2">{o.short}</h3>
+            <span class="label accent" style="margin-top:auto">Ver →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>

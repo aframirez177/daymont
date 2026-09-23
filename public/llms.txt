@@ -1,0 +1,19 @@
+# Daymont S.A.S.
+
+> Fabricante colombiano de cilindros hidráulicos y neumáticos con sede en Bogotá, fundado en 1979. Diseña, fabrica, repara y distribuye componentes hidráulicos y neumáticos con taller propio (torno, fresado CNC, impresión 3D, soldadura y cuarto de pintura).
+
+- Nombre legal: Daymont S.A.S. ("Diseños, Automatizaciones y Montajes")
+- Fundación: 1979, Bogotá, Colombia
+- Dirección: Avenida Ciudad de Cali, Cra. 85 N° 7D-06, Bogotá D.C.
+- Teléfono: (601) 292 1340
+- Cobertura: Colombia
+
+## Soluciones
+- [Cilindros hidráulicos a medida](https://aframirez177.github.io/daymont/soluciones/cilindros-hidraulicos/): diseño y fabricación según diámetro, vástago, carrera, montaje y presión; prueba de presión antes de entrega.
+- [Reparación de cilindros](https://aframirez177.github.io/daymont/soluciones/reparacion-de-cilindros/): diagnóstico, sellos, vástago y camisa, prueba de presión. Inicio por WhatsApp con foto de placa y daño.
+- [Cilindros neumáticos](https://aframirez177.github.io/daymont/soluciones/cilindros-neumaticos/): fabricación propia, ISO 6431, compactos, electroválvulas, válvulas manuales, unidades de mantenimiento.
+- [Bombas y motores Vickers](https://aframirez177.github.io/daymont/soluciones/bombas-y-motores-vickers/): paletas Vickers (hoy Vickers by Danfoss) y equipos hidráulicos.
+- [Fabricación de piezas](https://aframirez177.github.io/daymont/soluciones/fabricacion-de-piezas/): prototipo en impresión 3D, pieza final en torno/CNC, soldadura y pintura.
+
+## Cómo cotizar
+Configurador en la página principal: tipo, Ø camisa, Ø vástago, carrera, montaje, presión, cantidad y ciudad; calcula la fuerza teórica (F = P × A) y envía la solicitud por WhatsApp.

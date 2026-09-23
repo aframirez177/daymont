@@ -1,0 +1,626 @@
+<title>Daymont Exploración 01</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800;900&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* Single-look design: the palette switcher, not the OS theme, sets the colors. */
+:root{
+  color-scheme: dark;
+  --bg:#0E0E0E; --surface:#1A1A19; --line:#2E2D2A; --muted:#8A8984; --text:#E8E6E1;
+  --accent:#F24E1E; --accent-ink:#F24E1E; --on-accent:#0E0E0E;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+:root[data-pal="azul"]{
+  color-scheme: dark;
+  --bg:#0A1624; --surface:#10233A; --line:#1E3A55; --muted:#7C8A96; --text:#EEF1F3;
+  --accent:#FFB000; --accent-ink:#FFB000; --on-accent:#0A1624;
+}
+:root[data-pal="acero"]{
+  color-scheme: light;
+  --bg:#F4F2EC; --surface:#E7E4DC; --line:#C9C6BE; --muted:#5E6166; --text:#141414;
+  --accent:#FFD100; --accent-ink:#141414; --on-accent:#141414;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.55;margin:0;transition:background .35s,color .35s}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:clamp(16px,4vw,40px)}
+a{color:var(--accent-ink)}
+.mono{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.mono b{color:var(--text);font-weight:500}
+h1,h2,h3{font-family:var(--display);font-weight:800;text-transform:uppercase;line-height:.92;letter-spacing:-.005em;margin:0;text-wrap:balance}
+h2{font-size:clamp(40px,6vw,76px)}
+h3{font-size:28px;font-weight:700;line-height:1}
+p{margin:0;max-width:64ch}
+.rule{border:0;border-top:1px solid var(--line);margin:0}
+
+/* Top bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding-block:12px}
+.logo{font-family:var(--display);font-weight:900;font-size:24px;letter-spacing:.02em;display:flex;align-items:center;gap:8px}
+.logo i{display:inline-block;width:12px;height:12px;background:var(--accent)}
+.switch{display:flex;gap:6px;flex-wrap:wrap}
+.switch button{font:500 12px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:9px 12px;border:1px solid var(--line);background:transparent;color:var(--text);cursor:pointer;display:flex;gap:8px;align-items:center}
+.switch button span{width:10px;height:10px;display:inline-block}
+.switch button[aria-pressed="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}
+.switch button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* Hero */
+.hero{padding-block:48px 40px;display:grid;gap:32px}
+.hero .meta{display:flex;flex-wrap:wrap;gap:8px 28px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding-block:10px}
+.hero h1{font-size:clamp(64px,13vw,184px);font-weight:900;line-height:.84}
+.hero h1 em{font-style:normal;color:var(--accent-ink)}
+:root[data-pal="acero"] .hero h1 em{background:var(--accent);padding:0 .08em}
+.hero .lede{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:end}
+.hero .lede p{font-size:19px}
+.cyl{width:100%;height:auto;display:block}
+.cyl .rod{animation:stroke 3.2s cubic-bezier(.65,0,.35,1) infinite alternate}
+@keyframes stroke{from{transform:translateX(0)}to{transform:translateX(150px)}}
+@media (prefers-reduced-motion:reduce){.cyl .rod{animation:none;transform:translateX(90px)}}
+.ctas{display:flex;gap:10px;flex-wrap:wrap}
+.btn{font:600 15px/1 var(--body);padding:14px 18px;border:1px solid var(--text);color:var(--text);text-decoration:none;display:inline-flex;gap:10px;align-items:center}
+.btn.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.note{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
+
+section.block{padding-block:72px;border-top:1px solid var(--line);display:grid;gap:32px}
+.eyebrow{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+/* Type specimen */
+.spec{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.spec > div{background:var(--bg);padding:24px;display:grid;gap:14px;align-content:start}
+.spec .big{font-family:var(--display);font-weight:900;font-size:96px;line-height:.85;text-transform:uppercase}
+.spec .med{font-family:var(--body);font-size:44px;font-weight:500;line-height:1}
+.spec .monobig{font-family:var(--mono);font-size:34px;font-weight:500;line-height:1.05}
+.scale{display:grid;gap:10px}
+.scale div{display:grid;grid-template-columns:90px 1fr;gap:16px;align-items:baseline;border-bottom:1px dashed var(--line);padding-bottom:10px}
+
+/* Palettes */
+.pals{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.pal{border:1px solid var(--line);display:grid;grid-template-rows:auto 1fr;cursor:pointer;text-align:left;padding:0;background:none;color:inherit;font:inherit}
+.pal:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.pal.on{outline:2px solid var(--text);outline-offset:3px}
+.pal .mock{padding:18px;display:grid;gap:10px;min-height:190px}
+.pal .mock .t{font-family:var(--display);font-weight:900;font-size:44px;line-height:.85;text-transform:uppercase}
+.pal .mock .chip{justify-self:start;font:600 12px/1 var(--body);padding:8px 10px}
+.pal .body{padding:18px;display:grid;gap:12px;background:var(--surface)}
+.sw{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.sw div{aspect-ratio:1;border:1px solid rgba(128,128,128,.25)}
+.sw + .hex{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;font-family:var(--mono);font-size:10px;color:var(--muted)}
+.verdict{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:6px 8px;justify-self:start;border:1px solid var(--line)}
+.verdict.go{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+
+/* Benchmark table */
+.tscroll{overflow-x:auto;border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;min-width:880px;font-size:15px}
+th,td{text-align:left;vertical-align:top;padding:14px 14px;border-bottom:1px solid var(--line)}
+th{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--surface)}
+td:first-child{font-family:var(--display);font-weight:700;font-size:22px;text-transform:uppercase;line-height:1;white-space:nowrap}
+td small{display:block;font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:6px;font-weight:400}
+tr.us td{background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.dots{display:flex;gap:3px}
+.dots i{width:18px;height:18px;display:inline-block;border:1px solid rgba(128,128,128,.35)}
+
+/* Color map */
+.cmap{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.cmap > div{background:var(--bg);padding:18px;display:grid;gap:10px;align-content:start}
+.cmap .bigsw{height:64px}
+.cmap .who{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;line-height:1.7}
+
+/* Pipeline */
+.flow{display:grid;gap:18px}
+.row{display:grid;grid-template-columns:170px 1fr;gap:16px;align-items:start}
+.steps{display:flex;flex-wrap:wrap;gap:6px;align-items:stretch}
+.step{border:1px solid var(--line);padding:10px 12px;font-size:14px;line-height:1.3;background:var(--surface);max-width:190px}
+.step b{display:block;font-family:var(--mono);font-size:10px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.step.hot{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.step.hot b{color:var(--on-accent);opacity:.75}
+.step.leak{border-style:dashed;background:transparent;color:var(--muted)}
+.arrow{align-self:center;font-family:var(--mono);color:var(--muted)}
+.doors{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.door{border:1px solid var(--line);padding:20px;display:grid;gap:10px;align-content:start}
+.door .n{font-family:var(--display);font-weight:900;font-size:56px;line-height:.8;color:var(--accent-ink)}
+
+/* Two columns */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
+.split > div{background:var(--bg);padding:24px;display:grid;gap:14px;align-content:start}
+ul.clean{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+ul.clean li{padding-left:22px;position:relative}
+ul.clean li::before{content:"";position:absolute;left:0;top:.6em;width:10px;height:2px;background:var(--accent)}
+:root[data-pal="acero"] ul.clean li::before{background:var(--text)}
+
+/* Capabilities */
+.caps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.cap{background:var(--bg);padding:20px;display:grid;gap:8px;align-content:start}
+.cap .code{font-family:var(--mono);font-size:11px;color:var(--accent-ink);letter-spacing:.06em}
+:root[data-pal="acero"] .cap .code{color:var(--muted)}
+.cap h3{font-size:26px}
+.cap p{font-size:15px;color:var(--muted)}
+
+/* Horizons */
+.hz{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.hz > div{border-top:4px solid var(--text);padding-top:16px;display:grid;gap:10px;align-content:start}
+.hz > div:first-child{border-color:var(--accent)}
+.hz .yr{font-family:var(--mono);font-size:12px;color:var(--muted)}
+
+.words{display:flex;flex-wrap:wrap;gap:10px}
+.words span{font-family:var(--display);font-weight:800;font-size:clamp(36px,5vw,60px);text-transform:uppercase;line-height:1;padding:6px 14px;border:1px solid var(--line)}
+.words span:first-child{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.tag{font-family:var(--display);font-weight:700;font-size:30px;text-transform:uppercase;line-height:1.05;border-left:3px solid var(--accent);padding-left:14px}
+
+/* Logo */
+.hero-mark{background:var(--surface);border:1px solid var(--line);display:grid;place-items:center;padding:clamp(40px,8vw,96px) 24px}
+.m-big{width:min(520px,80%);height:auto;fill:var(--accent-ink)}
+.build .con{margin:0;display:grid;grid-template-columns:1.3fr 1fr;gap:28px;align-items:center;border:1px solid var(--line);padding:24px}
+.con svg{width:100%;height:auto}
+.con .grid line{stroke:var(--line);stroke-width:.5;stroke-dasharray:2 2}
+.con .ghost{fill:var(--accent-ink);opacity:.14}
+.con .strokes rect{fill:none;stroke:var(--accent-ink);stroke-width:1}
+.con .lbl text{font-family:var(--mono);font-size:7px;fill:var(--text)}
+.con .chf circle{fill:none;stroke:var(--text);stroke-width:.6;stroke-dasharray:1.5 1.5}
+.con figcaption{display:grid;gap:12px}
+.con figcaption p{font-size:14px;color:var(--muted)}
+.parts{margin:0;padding:0;list-style:none;display:grid;gap:8px;font-size:15px}
+.parts b{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--accent-ink);margin-right:6px}
+:root[data-pal="acero"] .parts b{color:var(--text)}
+.ladder{display:flex;flex-wrap:wrap;align-items:flex-end;gap:32px;border:1px solid var(--line);padding:28px}
+.rung{display:grid;gap:10px;justify-items:start;fill:var(--accent-ink)}
+.rung svg{height:auto;display:block}
+.favrow{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.fv{margin:0;border:1px solid var(--line);display:grid;grid-template-columns:180px 1fr;gap:20px;padding:20px;align-items:center}
+.fv figcaption{display:grid;gap:8px}
+.fv figcaption p{font-size:14px;color:var(--muted)}
+.pixels svg{width:100%;height:auto;display:block;fill:var(--accent-ink);background:var(--surface)}
+.pxgrid line{stroke:var(--line);stroke-width:.04}
+.devices{border:1px solid var(--line);padding:20px;display:grid;gap:18px;align-content:center}
+.tab{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-bottom:0;padding:8px 12px;max-width:280px;font-size:13px}
+.tab svg{width:16px;height:16px;fill:var(--accent-ink);flex:none}
+.tab span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tab i{font-style:normal;color:var(--muted);margin-left:auto}
+.appicons{display:flex;gap:14px}
+.app{width:64px;height:64px;border-radius:14px;display:grid;place-items:center}
+.app svg{width:70%;height:auto}
+.app.a1{background:#161616;fill:#F24E1E}
+.app.a2{background:#F24E1E;fill:#161616}
+.app.a3{background:#161616;fill:#F24E1E;border-radius:50%}
+.app.a3 svg{width:52%}
+.lockup{display:flex;align-items:center;gap:clamp(14px,2.4vw,28px);flex-wrap:wrap;padding:36px 28px;border:1px solid var(--line);background:var(--bg)}
+.lockup .glyph{width:clamp(110px,17vw,200px);height:auto;fill:var(--accent-ink)}
+.lockup .wm{font-family:var(--display);font-weight:900;font-size:clamp(60px,10.5vw,128px);line-height:.8;color:var(--text)}
+.lockup .sub{flex-basis:100%}
+.minis{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.mini{border:1px solid var(--line);padding:22px;display:flex;align-items:center;justify-content:center;gap:14px;min-height:110px}
+.mini svg{width:72px;height:auto}
+.mini span{font-family:var(--display);font-weight:900;font-size:36px;line-height:1}
+.mini.inv{background:var(--accent);fill:var(--on-accent);color:var(--on-accent);border-color:var(--accent)}
+.mini.stencil{background:#1b1b1b;fill:#E8E6E1;color:#E8E6E1;flex-direction:column;border-color:#1b1b1b}
+.mini.stencil .mono{color:#E8E6E1}
+:root[data-pal="acero"] .rung,:root[data-pal="acero"] .m-big,:root[data-pal="acero"] .lockup .glyph,:root[data-pal="acero"] .pixels svg,:root[data-pal="acero"] .tab svg{fill:var(--text)}
+@media (max-width:900px){.build .con,.favrow,.minis,.fv{grid-template-columns:1fr}.fv .pixels{max-width:200px}}
+
+.src{font-size:14px;color:var(--muted)}
+.src li{margin-bottom:6px}
+footer{padding-block:40px 64px;border-top:1px solid var(--line)}
+
+@media (max-width:900px){
+  .hero .lede,.split{grid-template-columns:1fr}
+  .spec,.pals,.doors,.caps,.hz{grid-template-columns:1fr}
+  .cmap{grid-template-columns:1fr 1fr}
+  .row{grid-template-columns:1fr}
+  .spec .big{font-size:72px}
+}
+@media (max-width:480px){.cmap{grid-template-columns:1fr}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <!-- Master: 5 strokes (top rail, bottom rail, rod, piston wall, end cap) + D chamfers + machined tip chamfers. Grid unit 12. -->
+  <symbol id="mk" viewBox="0 0 160 60"><path fill-rule="evenodd" d="M15 0H146L160 14V46L146 60H15L12 57V51L15 48H60V36H3L0 33V27L3 24H60V12H15L12 9V3Z M78 12V48H124V12Z"/></symbol>
+  <!-- Favicon: redrawn on a 16px grid, wider gaps, 2px chamfers -->
+  <symbol id="fav" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1 1H14L16 3V13L14 15H1V12H4V10H0V6H4V4H1Z M7 4V12H12V4Z"/></symbol>
+</svg>
+
+<header class="bar">
+  <div class="wrap">
+    <div class="logo"><svg width="48" height="18" viewBox="0 0 160 60" style="fill:var(--accent-ink)" aria-hidden="true"><use href="#mk"/></svg>DAYMONT</div>
+    <div class="switch" role="group" aria-label="Paleta de color">
+      <button id="p-taller" data-pal="taller" aria-pressed="true"><span style="background:#F24E1E"></span>01 Taller</button>
+      <button id="p-azul" data-pal="azul" aria-pressed="false"><span style="background:#FFB000"></span>02 Azul hidráulico</button>
+      <button id="p-acero" data-pal="acero" aria-pressed="false"><span style="background:#FFD100"></span>03 Acero</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- HERO MOCKUP -->
+  <section class="hero" aria-label="Hero de ejemplo">
+    <div class="meta">
+      <span class="mono">Exploración <b>01</b></span>
+      <span class="mono">Estado <b>Ideas, sin arrancar</b></span>
+      <span class="mono">Tipos <b>Barlow Condensed · Barlow · JetBrains Mono</b></span>
+      <span class="mono">Bogotá <b>Av. Ciudad de Cali</b></span>
+    </div>
+    <h1>Fuerza lineal<br><em>desde 1979.</em></h1>
+    <svg class="cyl" viewBox="0 0 1100 220" role="img" aria-label="Cilindro hidráulico en corte con el vástago extendiéndose">
+      <g fill="none" stroke="currentColor" stroke-width="1" opacity=".35">
+        <line x1="60" y1="30" x2="700" y2="30"/><line x1="60" y1="22" x2="60" y2="38"/><line x1="700" y1="22" x2="700" y2="38"/>
+      </g>
+      <text x="380" y="20" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="currentColor" opacity=".6">CAMISA · CARRERA MÁX.</text>
+      <!-- rod + piston -->
+      <g class="rod">
+        <rect x="360" y="104" width="560" height="22" fill="var(--muted)"/>
+        <rect x="360" y="104" width="560" height="5" fill="var(--text)" opacity=".5"/>
+        <rect x="908" y="92" width="40" height="46" fill="var(--text)"/>
+        <circle cx="928" cy="115" r="9" fill="var(--bg)"/>
+        <rect x="330" y="66" width="34" height="98" fill="var(--accent)"/>
+      </g>
+      <!-- barrel (cutaway) -->
+      <rect x="80" y="60" width="620" height="110" fill="none" stroke="var(--text)" stroke-width="3"/>
+      <rect x="80" y="60" width="620" height="8" fill="var(--text)"/>
+      <rect x="80" y="162" width="620" height="8" fill="var(--text)"/>
+      <!-- caps -->
+      <rect x="40" y="46" width="48" height="138" fill="var(--text)"/>
+      <rect x="692" y="46" width="48" height="138" fill="var(--text)"/>
+      <rect x="10" y="98" width="34" height="34" fill="var(--text)"/>
+      <circle cx="26" cy="115" r="8" fill="var(--bg)"/>
+      <!-- ports -->
+      <rect x="120" y="36" width="26" height="26" fill="var(--accent)"/>
+      <rect x="636" y="36" width="26" height="26" fill="var(--accent)"/>
+      <g font-family="JetBrains Mono, monospace" font-size="11" fill="currentColor" opacity=".7">
+        <text x="120" y="206">PUERTO A</text><text x="600" y="206">PUERTO B</text><text x="780" y="206">VÁSTAGO CROMADO</text>
+      </g>
+    </svg>
+    <div class="lede">
+      <p>Diseñamos, fabricamos y reparamos cilindros hidráulicos y neumáticos para la industria colombiana. Torno, fresado CNC, soldadura y pintura en un mismo taller.</p>
+      <div style="display:grid;gap:12px">
+        <div class="ctas">
+          <a class="btn primary" href="#pipeline">Configurar un cilindro →</a>
+          <a class="btn" href="#pipeline">Reparar un cilindro</a>
+        </div>
+        <span class="note">MOCKUP — copy y datos de ejemplo, no son specs reales de Daymont.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOGO -->
+  <section class="block" aria-labelledby="t-logo">
+    <div class="eyebrow"><span class="mono">00 · Logo</span><span class="mono">5 trazos · 2 chaflanes · grilla de 12</span></div>
+    <h2 id="t-logo">Una D con un pistón adentro</h2>
+
+    <div class="hero-mark">
+      <svg viewBox="0 0 160 60" class="m-big" role="img" aria-label="Marca Daymont"><use href="#mk"/></svg>
+    </div>
+
+    <div class="build">
+      <figure class="con">
+        <svg viewBox="-8 -8 176 76" role="img" aria-label="Construcción de la marca en 5 trazos">
+          <g class="grid">
+            <line x1="-8" y1="0" x2="168" y2="0"/><line x1="-8" y1="12" x2="168" y2="12"/><line x1="-8" y1="24" x2="168" y2="24"/>
+            <line x1="-8" y1="36" x2="168" y2="36"/><line x1="-8" y1="48" x2="168" y2="48"/><line x1="-8" y1="60" x2="168" y2="60"/>
+            <line x1="0" y1="-8" x2="0" y2="68"/><line x1="12" y1="-8" x2="12" y2="68"/><line x1="60" y1="-8" x2="60" y2="68"/>
+            <line x1="78" y1="-8" x2="78" y2="68"/><line x1="124" y1="-8" x2="124" y2="68"/><line x1="160" y1="-8" x2="160" y2="68"/>
+          </g>
+          <path class="ghost" fill-rule="evenodd" d="M15 0H146L160 14V46L146 60H15L12 57V51L15 48H60V36H3L0 33V27L3 24H60V12H15L12 9V3Z M78 12V48H124V12Z"/>
+          <g class="strokes">
+            <rect x="12" y="0" width="112" height="12"/><rect x="12" y="48" width="112" height="12"/>
+            <rect x="0" y="24" width="60" height="12"/><rect x="60" y="0" width="18" height="60"/>
+            <rect x="124" y="0" width="36" height="60"/>
+          </g>
+          <g class="lbl">
+            <text x="36" y="8">1</text><text x="36" y="56">2</text><text x="28" y="32">3</text><text x="66" y="32">4</text><text x="142" y="32">5</text>
+          </g>
+          <g class="chf"><circle cx="153" cy="7" r="9"/><circle cx="153" cy="53" r="9"/></g>
+        </svg>
+        <figcaption>
+          <span class="mono"><b>Construcción</b></span>
+          <ol class="parts">
+            <li><b>1 · 2</b> Rieles de la camisa. Sobresalen a la izquierda, igual que en tu boceto.</li>
+            <li><b>3</b> Vástago que entra al cilindro. Es el trazo más largo hacia la izquierda.</li>
+            <li><b>4</b> Cara del pistón. Es más gruesa que los rieles (1.5×) porque es la pieza que empuja.</li>
+            <li><b>5</b> Tapa. Con los chaflanes grandes, el conjunto se lee como una <b>D</b>.</li>
+          </ol>
+          <p>Todo se apoya en una grilla de 12: los rieles, el vástago y los espacios entre ellos miden lo mismo. Las puntas de los trazos llevan un chaflán de 3 unidades, como una arista mecanizada. Solo se nota en tamaño grande y en pequeño desaparece sin dejar ruido.</p>
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="ladder">
+      <div class="rung"><svg viewBox="0 0 160 60" style="width:160px"><use href="#mk"/></svg><span class="mono">160 px</span></div>
+      <div class="rung"><svg viewBox="0 0 160 60" style="width:96px"><use href="#mk"/></svg><span class="mono">96</span></div>
+      <div class="rung"><svg viewBox="0 0 160 60" style="width:56px"><use href="#mk"/></svg><span class="mono">56</span></div>
+      <div class="rung"><svg viewBox="0 0 16 16" style="width:32px"><use href="#fav"/></svg><span class="mono">32 · fav</span></div>
+      <div class="rung"><svg viewBox="0 0 16 16" style="width:16px" shape-rendering="crispEdges"><use href="#fav"/></svg><span class="mono">16 · fav</span></div>
+    </div>
+
+    <div class="favrow">
+      <figure class="fv">
+        <div class="pixels" aria-label="Favicon en grilla de 16 píxeles">
+          <svg viewBox="0 0 16 16"><g class="pxgrid"></g><use href="#fav"/></svg>
+        </div>
+        <figcaption><span class="mono"><b>Favicon 16 × 16</b></span><p>Está redibujado a mano sobre píxeles enteros, no reducido del original. Los espacios entre trazos pasan a 2 px porque, reducidos, quedarían en 1.2 px y se verían borrosos. El vástago es más grueso que los rieles para que se note. Los chaflanes de la D quedan como escalones de 2 px a 45°.</p></figcaption>
+      </figure>
+      <div class="devices">
+        <div class="tab"><svg viewBox="0 0 16 16" shape-rendering="crispEdges"><use href="#fav"/></svg><span>Daymont · Cilindros hidráulicos</span><i>×</i></div>
+        <div class="appicons">
+          <div class="app a1"><svg viewBox="0 0 160 60"><use href="#mk"/></svg></div>
+          <div class="app a2"><svg viewBox="0 0 160 60"><use href="#mk"/></svg></div>
+          <div class="app a3"><svg viewBox="0 0 16 16"><use href="#fav"/></svg></div>
+        </div>
+        <span class="mono">Pestaña · ícono de app · perfil de redes</span>
+      </div>
+    </div>
+
+    <div class="lockup">
+      <svg viewBox="0 0 160 60" class="glyph"><use href="#mk"/></svg>
+      <span class="wm">DAYMONT</span>
+      <span class="mono sub">Diseños · Automatizaciones · Montajes — desde 1979</span>
+    </div>
+    <div class="minis">
+      <div class="mini inv"><svg viewBox="0 0 160 60"><use href="#mk"/></svg><span>DAYMONT</span></div>
+      <div class="mini stencil"><span class="mono">LOT N° 0412 · DYM-H</span><svg viewBox="0 0 160 60"><use href="#mk"/></svg></div>
+    </div>
+  </section>
+
+  <!-- TYPE -->
+  <section class="block" aria-labelledby="t-type">
+    <div class="eyebrow"><span class="mono">01 · Sistema tipográfico</span><span class="mono">3 roles, 3 familias</span></div>
+    <h2 id="t-type">Tipografía</h2>
+    <div class="spec">
+      <div>
+        <span class="mono">Display · <b>Barlow Condensed 900</b></span>
+        <div class="big">Ø63<br>×250</div>
+        <p style="font-size:15px;color:var(--muted)">Para titulares y cifras grandes. Condensada, pesada y en mayúsculas, como el esténcil de una bodega. Se usa poco y en tamaño grande.</p>
+      </div>
+      <div>
+        <span class="mono">Texto · <b>Barlow 400/500</b></span>
+        <div class="med">Cilindros a medida, reparación y repuestos.</div>
+        <p style="font-size:15px;color:var(--muted)">Es la misma familia que el display, así que el sistema se siente de una sola pieza. Tiene una geometría suave, inspirada en la señalética vial, y se lee bien en fichas largas.</p>
+      </div>
+      <div>
+        <span class="mono">Datos · <b>JetBrains Mono</b></span>
+        <div class="monobig">P.MAX 160 bar<br>REF DYM-H-0412</div>
+        <p style="font-size:15px;color:var(--muted)">Para specs, referencias, etiquetas y números de lote. Es donde la referencia (Synthetic Logistics) se vuelve verdad, porque aquí van datos reales.</p>
+      </div>
+    </div>
+    <div class="scale">
+      <div><span class="mono">H1 / 900</span><span style="font-family:var(--display);font-weight:900;font-size:64px;line-height:.9;text-transform:uppercase">Hecho en Bogotá</span></div>
+      <div><span class="mono">H2 / 800</span><span style="font-family:var(--display);font-weight:800;font-size:40px;line-height:.95;text-transform:uppercase">Cilindros equipo móvil</span></div>
+      <div><span class="mono">H3 / 700</span><span style="font-family:var(--display);font-weight:700;font-size:26px;text-transform:uppercase">Bombas de paletas Vickers</span></div>
+      <div><span class="mono">Body / 400</span><span>Fabricamos según plano, muestra o pieza dañada. Si nos envías una foto de la placa, te respondemos con la referencia.</span></div>
+      <div><span class="mono">Label / mono</span><span class="mono" style="color:var(--text)">LOT N° 0412 · ISO 6431 · ENTREGA 10 DÍAS HÁB.</span></div>
+    </div>
+  </section>
+
+  <!-- PALETTES -->
+  <section class="block" aria-labelledby="t-pal">
+    <div class="eyebrow"><span class="mono">02 · Color</span><span class="mono">Toca una paleta para aplicarla a toda la página</span></div>
+    <h2 id="t-pal">Tres paletas</h2>
+    <div class="pals">
+      <button class="pal" data-pal="taller" id="card-taller">
+        <div class="mock" style="background:#0E0E0E;color:#E8E6E1">
+          <span style="font:500 10px/1 'JetBrains Mono',monospace;color:#8A8984;letter-spacing:.06em">SECTOR 01 // TALLER</span>
+          <span class="t">Negro taller</span>
+          <span class="chip" style="background:#F24E1E;color:#0E0E0E">Cotizar →</span>
+        </div>
+        <div class="body">
+          <div class="sw"><div style="background:#0E0E0E"></div><div style="background:#1A1A19"></div><div style="background:#8A8984"></div><div style="background:#E8E6E1"></div><div style="background:#F24E1E"></div></div>
+          <div class="hex"><span>0E0E0E</span><span>1A1A19</span><span>8A8984</span><span>E8E6E1</span><span>F24E1E</span></div>
+          <span class="verdict go">Diferencia · recomendada</span>
+          <p style="font-size:14px">En Bogotá nadie del sector usa el naranja. Tiene código de seguridad industrial (familia RAL 2004), es la paleta de la referencia y hace que las fotos del taller se vean bien.</p>
+        </div>
+      </button>
+      <button class="pal" data-pal="azul" id="card-azul">
+        <div class="mock" style="background:#0A1624;color:#EEF1F3">
+          <span style="font:500 10px/1 'JetBrains Mono',monospace;color:#7C8A96;letter-spacing:.06em">SECTOR 02 // HIDRÁULICA</span>
+          <span class="t">Azul hidráulico</span>
+          <span class="chip" style="background:#FFB000;color:#0A1624">Cotizar →</span>
+        </div>
+        <div class="body">
+          <div class="sw"><div style="background:#0A1624"></div><div style="background:#10233A"></div><div style="background:#7C8A96"></div><div style="background:#EEF1F3"></div><div style="background:#FFB000"></div></div>
+          <div class="hex"><span>0A1624</span><span>10233A</span><span>7C8A96</span><span>EEF1F3</span><span>FFB000</span></div>
+          <span class="verdict">Mezcla · segura</span>
+          <p style="font-size:14px">Conserva el azul del globo actual, pero el azul es el color de Festo, SMC y Sermec. Transmite confianza sin distinguir a Daymont. Sirve como plan B si la gerencia no quiere soltar el azul.</p>
+        </div>
+      </button>
+      <button class="pal" data-pal="acero" id="card-acero">
+        <div class="mock" style="background:#F4F2EC;color:#141414">
+          <span style="font:500 10px/1 'JetBrains Mono',monospace;color:#5E6166;letter-spacing:.06em">SECTOR 03 // PLANTA</span>
+          <span class="t">Acero + hazard</span>
+          <span class="chip" style="background:#FFD100;color:#141414">Cotizar →</span>
+        </div>
+        <div class="body">
+          <div class="sw"><div style="background:#F4F2EC"></div><div style="background:#E7E4DC"></div><div style="background:#5E6166"></div><div style="background:#141414"></div><div style="background:#FFD100"></div></div>
+          <div class="hex"><span>F4F2EC</span><span>E7E4DC</span><span>5E6166</span><span>141414</span><span>FFD100</span></div>
+          <span class="verdict">Choca · evitar</span>
+          <p style="font-size:14px">El amarillo con negro ya lo tienen COHA en Bogotá, Parker y el mundo de la maquinaria pesada. Con esta paleta Daymont se perdería entre la competencia directa.</p>
+        </div>
+      </button>
+    </div>
+  </section>
+
+  <!-- COLOR MAP -->
+  <section class="block" aria-labelledby="t-map">
+    <div class="eyebrow"><span class="mono">03 · Benchmark de color</span><span class="mono">Tonos aproximados, tomados de los sitios</span></div>
+    <h2 id="t-map">Qué colores ya tiene cada quién</h2>
+    <div class="cmap">
+      <div><div class="bigsw" style="background:linear-gradient(90deg,#0091DC,#1D2A6B)"></div><h3>Azul</h3><div class="who">Festo · SMC · Sermec · Daymont hoy (globo)</div><p style="font-size:14px;color:var(--muted)">El color de la ingeniería europea y del catálogo. Es lo que se espera, y por eso no se nota.</p></div>
+      <div><div class="bigsw" style="background:linear-gradient(90deg,#F2C230,#111)"></div><h3>Amarillo + negro</h3><div class="who">COHA · Parker · maquinaria pesada</div><p style="font-size:14px;color:var(--muted)">Se asocia con potencia y con obra. Está saturado y COHA lo ocupa en Bogotá.</p></div>
+      <div><div class="bigsw" style="background:linear-gradient(90deg,#C3161C,#1B1F3B)"></div><h3>Rojo</h3><div class="who">Bosch Rexroth · Danfoss/Vickers · Hydraulic Tech</div><p style="font-size:14px;color:var(--muted)">Es el color de las marcas que Daymont distribuye. Si Daymont lo usa, termina pareciendo un revendedor.</p></div>
+      <div style="outline:2px solid var(--accent);outline-offset:-2px"><div class="bigsw" style="background:linear-gradient(90deg,#F24E1E,#0E0E0E)"></div><h3>Naranja + negro</h3><div class="who">Libre en el nicho local</div><p style="font-size:14px;color:var(--muted)">Es el hueco disponible. Remite a señal de seguridad, maquinado y prototipo, que es justo lo que Daymont hace en su taller.</p></div>
+    </div>
+  </section>
+
+  <!-- BENCHMARK TABLE -->
+  <section class="block" aria-labelledby="t-bench">
+    <div class="eyebrow"><span class="mono">04 · Benchmark de industria</span><span class="mono">Local vs. global vs. manufactura digital</span></div>
+    <h2 id="t-bench">Cómo venden los demás</h2>
+    <div class="tscroll">
+      <table>
+        <thead><tr><th>Empresa</th><th>Paleta</th><th>Método de venta</th><th>Pipeline de conversión</th><th>Señal de confianza</th><th>Lección para Daymont</th></tr></thead>
+        <tbody>
+          <tr><td>COHA<small>Bogotá · desde 1974</small></td><td><div class="dots"><i style="background:#111"></i><i style="background:#F2C230"></i><i style="background:#fff"></i></div></td><td>Stock masivo (+22.000 ítems), fabricación e ingeniería. Tiene 4 sedes.</td><td>Slider → catálogo → "Adquirir producto" → formulario o teléfono → asesor</td><td>Cifras de volumen: 550 elevadores, 3.000 proyectos, más de 25 marcas aliadas</td><td>Es el rival a vencer. Pone números duros en la portada. Daymont también tiene historia y la puede cuantificar.</td></tr>
+          <tr><td>Hydraulic Tech<small>Fontibón · 10+ años</small></td><td><div class="dots"><i style="background:#8E1B1B"></i><i style="background:#1B1F3B"></i><i style="background:#fff"></i></div></td><td>Importación, reparación y proyectos. Distribuidor de Rexroth y aliado de Parker.</td><td>Hero → "Agendar ahora" + WhatsApp flotante → asesor</td><td>Logos de clientes: Caterpillar, Komatsu, Epiroc, Doosan</td><td>El WhatsApp visible es lo mínimo en Colombia. Los logos de clientes grandes convencen más que cualquier texto.</td></tr>
+          <tr><td>Sermec<small>Bogotá</small></td><td><div class="dots"><i style="background:#1D2A6B"></i><i style="background:#fff"></i><i style="background:#222"></i></div></td><td>Fabricación y mantenimiento de cilindros</td><td>Página de entrada → menú → contacto</td><td>Casi ninguna visible</td><td>Así se ve Daymont hoy. Si no hacemos nada, este es el grupo en el que queda.</td></tr>
+          <tr class="us"><td>Daymont hoy<small>Bogotá · desde 1979</small></td><td><div class="dots"><i style="background:#1F5FA8"></i><i style="background:#6B6B6B"></i><i style="background:#fff"></i></div></td><td>Fabricación propia (neumático e hidráulico) y distribución (ISO 6431, válvulas, Vickers)</td><td>Slider → PDF → 5 correos por departamento → PBX/FAX</td><td>Los 47 años, pero enterrados en "Empresa"</td><td>Tiene la mejor historia del grupo y el peor embudo. No hay WhatsApp, cotizador, texto indexable ni casos.</td></tr>
+          <tr><td>Festo<small>Global</small></td><td><div class="dots"><i style="background:#0091DC"></i><i style="background:#fff"></i><i style="background:#333"></i></div></td><td>Tienda online con precios y configuradores</td><td>Búsqueda → configurador → referencia + CAD descargable → carrito o distribuidor</td><td>Ficha técnica completa, CAD y certificados</td><td>La descarga de CAD sirve para captar leads. Un configurador de cilindro es factible para Daymont.</td></tr>
+          <tr><td>Parker<small>Global</small></td><td><div class="dots"><i style="background:#111"></i><i style="background:#FFB81C"></i><i style="background:#fff"></i></div></td><td>Catálogo, red de distribuidores y ParkerStores</td><td>Catálogo → "dónde comprar" → distribuidor local</td><td>Escala y red física</td><td>Daymont puede posicionarse como el taller local que resuelve lo que el catálogo no tiene.</td></tr>
+          <tr><td>Xometry / Protolabs<small>Manufactura digital</small></td><td><div class="dots"><i style="background:#1C4DD4"></i><i style="background:#fff"></i><i style="background:#0B1220"></i></div></td><td>Pieza a medida: CNC, impresión 3D, chapa</td><td>Subir CAD → cotización instantánea → pedido</td><td>Precio y tiempo al instante</td><td>Es el modelo para la línea de prototipos de Daymont, aunque sin cotización instantánea: plano o STL y respuesta en menos de 48 h.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- PIPELINE -->
+  <section class="block" id="pipeline" aria-labelledby="t-pipe">
+    <div class="eyebrow"><span class="mono">05 · Pipeline de conversión</span><span class="mono">Hoy vs. propuesta</span></div>
+    <h2 id="t-pipe">Del Google al pedido</h2>
+    <p>El comprador industrial llega informado. Según 6sense y Demand Gen Report, el 80 % de los compradores B2B hacen el primer contacto cuando ya recorrieron cerca del 70 % de su proceso de compra. Si el sitio no le resuelve la duda técnica, cotiza con otro proveedor.</p>
+    <div class="flow">
+      <div class="row"><span class="mono">Típico del sector</span>
+        <div class="steps">
+          <div class="step"><b>Entrada</b>Google / referido</div><span class="arrow">→</span>
+          <div class="step"><b>Home</b>Slider genérico</div><span class="arrow">→</span>
+          <div class="step leak"><b>Fuga</b>Catálogo en PDF o nada</div><span class="arrow">→</span>
+          <div class="step"><b>Contacto</b>Form / teléfono</div><span class="arrow">→</span>
+          <div class="step leak"><b>Fuga</b>Espera días al asesor</div><span class="arrow">→</span>
+          <div class="step"><b>Cierre</b>Cotización por correo</div>
+        </div>
+      </div>
+      <div class="row"><span class="mono">Propuesta Daymont</span>
+        <div class="steps">
+          <div class="step"><b>Entrada</b>Google, IA, referido, LinkedIn</div><span class="arrow">→</span>
+          <div class="step"><b>Ficha HTML</b>Specs, fotos del taller, CAD</div><span class="arrow">→</span>
+          <div class="step hot"><b>3 puertas</b>Configurar · Reparar · Prototipo</div><span class="arrow">→</span>
+          <div class="step"><b>Respuesta</b>Plazo prometido y cumplido</div><span class="arrow">→</span>
+          <div class="step"><b>Pedido</b>OC + seguimiento automático (n8n)</div><span class="arrow">→</span>
+          <div class="step"><b>Postventa</b>Recordatorio de mantenimiento</div>
+        </div>
+      </div>
+    </div>
+    <div class="doors">
+      <div class="door"><span class="n">A</span><h3>Configurar un cilindro</h3><p style="font-size:15px">El cliente elige diámetro, carrera, montaje y presión. El formulario genera un pedido de cotización ya estructurado, así Ingeniería no tiene que llamar a preguntar lo básico.</p><span class="mono">Para: mantenimiento, OEM</span></div>
+      <div class="door"><span class="n">B</span><h3>Reparar un cilindro</h3><p style="font-size:15px">Por WhatsApp: foto de la placa, foto del daño y ciudad. Es el volumen diario del negocio y la puerta más rápida para entrar a una planta como proveedor.</p><span class="mono">Para: urgencias, equipo móvil</span></div>
+      <div class="door"><span class="n">C</span><h3>Fabricar una pieza</h3><p style="font-size:15px">Se sube un plano, un STL o una foto. Cubre prototipo en 3D, pieza final en CNC, soldadura y pintura. Esta puerta abre la segunda línea de negocio.</p><span class="mono">Para: ingenieros, diseñadores</span></div>
+    </div>
+  </section>
+
+  <!-- BLEND vs DIFFERENTIATE -->
+  <section class="block" aria-labelledby="t-bd">
+    <div class="eyebrow"><span class="mono">06 · Posicionamiento</span><span class="mono">La respuesta: las dos cosas, en capas distintas</span></div>
+    <h2 id="t-bd">¿Mezclarnos o diferenciarnos?</h2>
+    <p>En lo que pide cualquier jefe de compras hay que parecerse al resto, porque si falta algo el cliente no confía. En la identidad visual y en la forma de vender hay que diferenciarse, porque si Daymont se ve igual a los demás, compite solo por precio.</p>
+    <div class="split">
+      <div>
+        <span class="mono">Mezclarse · higiene del sector</span>
+        <ul class="clean">
+          <li>Ficha técnica completa: diámetro, carrera, presión, montaje, materiales</li>
+          <li>WhatsApp visible y teléfono actual (sin el FAX)</li>
+          <li>Marcas que maneja: <b>Vickers by Danfoss</b> y la norma ISO 6431</li>
+          <li>Tiempos de entrega y cobertura nacional explícitos</li>
+          <li>Logos de clientes y sectores (con permiso)</li>
+          <li>NIT, dirección y foto real de la planta</li>
+        </ul>
+      </div>
+      <div>
+        <span class="mono">Diferenciarse · lo que nadie más hace</span>
+        <ul class="clean">
+          <li>Identidad negro taller + naranja: nadie en el nicho la usa</li>
+          <li>Tipografía condensada y etiquetas en mono, con estética de plano técnico</li>
+          <li>Fotografía propia del taller, nada de stock</li>
+          <li>Configurador de cilindro y carga de plano (las 3 puertas)</li>
+          <li>"Lo fabricamos completo aquí": torno, CNC, soldadura, pintura y 3D en un solo lugar</li>
+          <li>Casos documentados: problema → solución → cilindro entregado</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST -->
+  <section class="block" aria-labelledby="t-trust">
+    <div class="eyebrow"><span class="mono">07 · Confianza</span><span class="mono">En orden de peso para un comprador industrial</span></div>
+    <h2 id="t-trust">Qué genera confianza</h2>
+    <div class="caps">
+      <div class="cap"><span class="code">EVIDENCIA</span><h3>Taller real</h3><p>Fotos y video de las máquinas, de la gente y de piezas terminadas. Ver el taller convence más que leer "somos expertos".</p></div>
+      <div class="cap"><span class="code">TIEMPO</span><h3>47 años</h3><p>Desde 1979. Conviene cuantificarlo: cilindros fabricados, clientes activos, años del cliente más antiguo.</p></div>
+      <div class="cap"><span class="code">RESPUESTA</span><h3>Plazo cumplido</h3><p>Un plazo concreto de respuesta, como "cotización en 48 h", que se pueda medir. En este sector se valora más que un precio bajo.</p></div>
+      <div class="cap"><span class="code">PRECISIÓN</span><h3>Datos, no adjetivos</h3><p>Specs exactas, tolerancias y normas. La tipografía mono existe en el sistema para mostrar esos datos.</p></div>
+      <div class="cap"><span class="code">RESPALDO</span><h3>Marcas y clientes</h3><p>Vickers by Danfoss y empresas conocidas que ya le compran a Daymont.</p></div>
+      <div class="cap"><span class="code">CERCANÍA</span><h3>Una persona</h3><p>Un nombre y un WhatsApp de ingeniería, en lugar de cinco correos por departamento.</p></div>
+    </div>
+  </section>
+
+  <!-- CAPABILITIES -->
+  <section class="block" aria-labelledby="t-caps">
+    <div class="eyebrow"><span class="mono">08 · Capacidades del taller</span><span class="mono">Por confirmar con Fernando</span></div>
+    <h2 id="t-caps">Lo que hay detrás del cilindro</h2>
+    <div class="caps">
+      <div class="cap"><span class="code">CAP-01 · SUSTRACTIVO</span><h3>Torno</h3><p>Camisas, vástagos, tapas y roscas. Es el núcleo de la fabricación de cilindros.</p></div>
+      <div class="cap"><span class="code">CAP-02 · SUSTRACTIVO</span><h3>Fresado CNC</h3><p>Es la "impresora 3D al revés": talla bloques de metal. Sirve para soportes, bridas, moldes y piezas únicas.</p></div>
+      <div class="cap"><span class="code">CAP-03 · ADITIVO</span><h3>Impresión FDM · PLA</h3><p>Prototipos rápidos, plantillas, galgas y pruebas de ensamble antes de mecanizar.</p></div>
+      <div class="cap"><span class="code">CAP-04 · ADITIVO</span><h3>Resina (2 equipos)</h3><p>Detalle fino y superficies lisas, útiles para modelos, moldes y maquetas funcionales.</p></div>
+      <div class="cap"><span class="code">CAP-05 · UNIÓN</span><h3>Soldadura</h3><p>Estructuras, montajes y reparación de cilindros y bastidores.</p></div>
+      <div class="cap"><span class="code">CAP-06 · ACABADO</span><h3>Cuarto de pintura</h3><p>Acabado industrial, así que la pieza sale lista para instalar y no hay que mandarla a terceros.</p></div>
+    </div>
+    <p>La idea central es que los cilindros son la especialidad y todo lo demás es la prueba de que Daymont domina el ciclo completo. En el sitio las capacidades no deben aparecer como una lista de servicios sueltos, porque así la marca se diluye. Deben contarse como: <b>"del plano a la pieza instalada, sin salir del taller"</b>.</p>
+  </section>
+
+  <!-- HORIZONS -->
+  <section class="block" aria-labelledby="t-hz">
+    <div class="eyebrow"><span class="mono">09 · Hacia dónde va</span><span class="mono">Crecer sin perder la esencia</span></div>
+    <h2 id="t-hz">Tres horizontes</h2>
+    <div class="hz">
+      <div><span class="yr">2026–2027</span><h3>Digitalizar el núcleo</h3><p style="font-size:15px">Sitio nuevo, fichas HTML, WhatsApp, configurador y reparación express. El producto no cambia; cambia la forma de venderlo.</p></div>
+      <div><span class="yr">2027–2028</span><h3>Taller a medida</h3><p style="font-size:15px">Abrir la puerta C: prototipo en 3D → pieza en CNC → pintura → ensamble. Clientes nuevos (diseñadores, OEM pequeños, universidades) que después compran cilindros.</p></div>
+      <div><span class="yr">2028–2030</span><h3>Ingeniería de movimiento</h3><p style="font-size:15px">Pasar de vender el cilindro a vender el sistema que mueve la carga: diseño, fabricación, montaje y mantenimiento por contrato. Con esto, "Diseños, Automatizaciones y Montajes" vuelve a significar lo que dice.</p></div>
+    </div>
+  </section>
+
+  <!-- TRANSMIT -->
+  <section class="block" aria-labelledby="t-tr">
+    <div class="eyebrow"><span class="mono">10 · Qué transmitir</span><span class="mono">Tres palabras que filtran cada decisión</span></div>
+    <h2 id="t-tr">La nueva imagen dice</h2>
+    <div class="words"><span>Hecho aquí</span><span>Preciso</span><span>Desde 1979</span></div>
+    <div style="display:grid;gap:14px">
+      <span class="mono">Candidatos a tagline</span>
+      <p class="tag">Fuerza lineal desde 1979.</p>
+      <p class="tag">Del plano a la pieza. Sin salir del taller.</p>
+      <p class="tag">Diseñamos. Automatizamos. Montamos.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div style="display:grid;gap:16px">
+      <span class="mono">Fuentes</span>
+      <ol class="src">
+        <li>Daymont: <a href="https://www.daymont.com.co/website/index.php">daymont.com.co</a> (empresa, productos, contacto)</li>
+        <li>COHA: <a href="https://coha.com.co/">coha.com.co</a> · <a href="https://coha.com.co/fabricacion/cilindros-hidraulicos-y-neumaticos/">fabricación de cilindros</a></li>
+        <li>Hydraulic Tech: <a href="https://hyt.com.co/">hyt.com.co</a></li>
+        <li>Sermec: <a href="https://sermecltda.com/">sermecltda.com</a></li>
+        <li>Festo: <a href="https://www.festo.com/us/en/c/products/actuators-and-drives/pneumatic-cylinders-id_pim135">tienda y configuradores de cilindros</a></li>
+        <li>Vickers ahora es de Danfoss (cierre 2 ago 2021): <a href="https://www.danfoss.com/en/about-danfoss/our-businesses/power-solutions/industrial-solutions/">danfoss.com</a> · <a href="https://www.sec.gov/Archives/edgar/data/1551182/000155118221000184/etn-20210930.htm">Eaton 10-Q 2021</a></li>
+        <li>Comportamiento del comprador B2B: <a href="https://www.demandgenreport.com/industry-news/80-of-b2b-buyers-initiate-first-contact-once-theyre-70-through-their-buying-journey/48394/">Demand Gen Report / 6sense</a></li>
+        <li>Referencia visual: Synthetic Logistics 2024 (Behance, grabación de pantalla)</li>
+      </ol>
+      <span class="note">Los hex de la competencia son aproximados y se tomaron a ojo de sus sitios. Las cifras del mockup son de ejemplo.</span>
+    </div>
+  </footer>
+</main>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  function apply(p){
+    if(p==="taller") root.removeAttribute("data-pal"); else root.setAttribute("data-pal",p);
+    document.querySelectorAll(".switch button").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.pal===p?"true":"false")});
+    document.querySelectorAll(".pal").forEach(function(c){c.classList.toggle("on",c.dataset.pal===p)});
+    try{localStorage.setItem("daymont-pal",p)}catch(e){}
+  }
+  document.querySelectorAll("[data-pal]").forEach(function(el){
+    if(el.tagName==="BUTTON") el.addEventListener("click",function(){apply(el.dataset.pal)});
+  });
+  var g=document.querySelector(".pxgrid");
+  if(g){var ns="http://www.w3.org/2000/svg";for(var i=1;i<16;i++){[["x1",i,"y1",0,"x2",i,"y2",16],["x1",0,"y1",i,"x2",16,"y2",i]].forEach(function(a){var l=document.createElementNS(ns,"line");for(var k=0;k<a.length;k+=2)l.setAttribute(a[k],a[k+1]);g.appendChild(l)})}}
+  var saved="taller";
+  try{saved=localStorage.getItem("daymont-pal")||"taller"}catch(e){}
+  apply(saved);
+})();
+</script>
