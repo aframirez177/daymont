@@ -4,6 +4,7 @@ import Blueprint from '../components/Blueprint.astro';
 import HeroCylinder from '../islands/HeroCylinder.jsx';
 import Assembly from '../islands/Assembly.jsx';
 import Configurator from '../islands/Configurator.jsx';
+import Taller from '../islands/Taller.jsx';
 import { company, years, doors, assembly, capabilities, catalog, faq, wa, solutions } from '../data/site.js';
 
 const base = import.meta.env.BASE_URL;
@@ -88,32 +89,17 @@ const schema = [
   <!-- HORIZONTAL ASSEMBLY -->
   <Assembly client:idle steps={assembly} />
 
-  <!-- TALLER (immersive sticky) -->
-  <section class="taller" id="taller" aria-labelledby="taller-title">
-    <div class="pin" data-cl>
-      <div class="ghost-word" aria-hidden="true">TORNO</div>
-      <div class="wrap over">
-        <div class="eyebrow"><span class="label">02 · El taller</span><span class="label" data-counter>01 / 05</span></div>
-        <h2 id="taller-title" class="sr-only">Capacidades del taller Daymont</h2>
-        <div class="words" data-cl-text aria-hidden="true">
-          {capabilities.map((c) => <div class="word" data-short={c.word.split(' ')[0].toUpperCase()}>{c.word}</div>)}
-        </div>
-        <div class="info">
-          <div class="dots">{capabilities.map(() => <i></i>)}</div>
-          <div>
-            {capabilities.map((c, i) => (
-              <div data-cap hidden={i !== 0}>
-                <p class="label" style="margin-bottom:6px"><b>{c.code}</b> · {c.kind}</p>
-                <p class="lead">{c.text}</p>
-              </div>
-            ))}
-          </div>
-          <span class="label">Del plano a la pieza,<br />sin salir del taller</span>
-        </div>
-        <ul class="sr-only">{capabilities.map((c) => <li>{c.word}: {c.text}</li>)}</ul>
+  <!-- TALLER (interactive simulators) -->
+  <section class="section taller-x" id="taller" data-cl aria-labelledby="taller-title">
+    <span class="ghost-num" aria-hidden="true">02</span>
+    <div class="wrap over">
+      <div class="eyebrow"><span class="label">02 · El taller</span><span class="label">Pruébelo usted mismo</span></div>
+      <div class="split" style="margin-bottom:clamp(28px,4vw,48px);align-items:end">
+        <h2 id="taller-title" class="h1" data-split data-cl-text>Cinco procesos. <span class="hl">Un solo taller.</span></h2>
+        <p class="lead muted">Del plano a la pieza instalada sin salir de Bogotá. Elija un proceso y opérelo: tornee, frese, imprima, suelde y pinte.</p>
       </div>
+      <Taller client:visible items={capabilities} />
     </div>
-    <div class="steps-rail" aria-hidden="true"></div>
   </section>
 
   <!-- CATALOG -->
